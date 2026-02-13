@@ -1,0 +1,67 @@
+﻿@using BookNest.MVC.Areas.AdminPanel.ViewModels
+@model BookCreateVM
+@{
+    ViewData["Title"] = "New Book";
+}
+
+<div class="col-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Create new Book</h4>
+
+            <form class="forms-sample" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Title">Book Title</label>
+                    <input asp-for="Title" class="form-control" placeholder="Book Title">
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Description">Description</label>
+                    <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 form-group">
+                        <label asp-for="PageCount">Page Count</label>
+                        <input asp-for="PageCount" class="form-control" type="number" min="1">
+                        <span asp-validation-for="PageCount" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4 form-group">
+                        <label asp-for="Language">Language</label>
+                        <input asp-for="Language" class="form-control" placeholder="E.g., Azerbaijani, English">
+                        <span asp-validation-for="Language" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4 form-group">
+                        <label asp-for="PublishedDate">Published Date</label>
+                        <input asp-for="PublishedDate" class="form-control" type="date">
+                        <span asp-validation-for="PublishedDate" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    
+                    <div class="col-md-6 form-group">
+                        <label>Genres (Hold Ctrl for multiple selection)</label>
+                        <select asp-for="GenreIds" asp-items="Model.Genres" class="form-control" multiple>
+                        </select>
+                        <span asp-validation-for="GenreIds" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6 form-group">
+                        <label>Authors</label>
+                        <select asp-for="AuthorIds" asp-items="Model.Authors" class="form-control" multiple>
+                        </select>
+                        <span asp-validation-for="AuthorIds" class="text-danger"></span>
+                    </div>
+
+                </div>
+
+                <button type="submit" class="btn btn-primary me-2">Create</button>
+                <a asp-action="Index" class="btn btn-light">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>

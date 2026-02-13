@@ -2,12 +2,12 @@
 
 namespace BookNest.Core.Entities
 {
-    public class BookGenre : BaseEntity
+    public class BookAuthor : BaseEntity
     {
         public int BookId { get; set; }
         public Book Book { get; set; }
 
-        public int GenreId { get; set; }
-        public Genre Genre { get; set; }
+        public int AuthorId { get; set; }
+        public Author Author { get; set; }
     }
 }

@@ -1,0 +1,101 @@
+﻿@using BookNest.Core.Entities
+@model List<Book>
+@{
+    ViewData["Title"] = "Books";
+}
+
+<div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="card-title m-0">Kitablar Siyahısı</h4>
+                <a asp-action="Create" class="btn btn-success btn-rounded">+ New Book</a>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Image</th>
+                            <th>Title</th>
+                            <th>Genres</th>
+                            <th>Authors</th>
+                            <th>Information</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr class="align-middle">
+                                <td>@item.Id</td>
+                                <td class="py-1">
+                                    @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                    {
+                                        <img src="~/admin/images/@item.ImageUrl" style="width:50px; height:70px; object-fit:cover; border-radius:4px;" />
+                                    }
+                                    else
+                                    {
+                                        <img src="~/admin/images/no-image.png" style="width:50px; height:70px; object-fit:cover; border-radius:4px; opacity:0.6;" />
+                                    }
+                                </td>
+
+                                <td style="font-weight: 500;">
+                                    @item.Title
+                                </td>
+
+                                <td>
+                                    @foreach (var bg in item.BookGenres)
+                                    {
+                                        <div class="badge badge-outline-primary mb-1">
+                                            @bg.Genre.Name
+                                        </div>
+                                    }
+                                </td>
+
+                                <td>
+                                    @foreach (var ba in item.BookAuthors)
+                                    {
+                                        <div class="badge badge-outline-success mb-1">
+                                            @ba.Author.FullName
+                                        </div>
+                                    }
+                                </td>
+
+                                <td>
+                                    <div class="d-flex flex-column text-muted small">
+                                        <div class="mb-1">
+                                            <i class="mdi mdi-translate text-primary me-1"></i>
+                                            @(item.Language ?? "-")
+                                        </div>
+                                        <div>
+                                            <i class="mdi mdi-book-open-page-variant text-warning me-1"></i>
+                                            @(item.PageCount != null && item.PageCount != 0 ? item.PageCount + " pages" : "-")
+                                        </div>
+                                        <div>
+                                            <i class="mdi mdi-calendar-clock text-success me-1"></i>
+                                            @(item.PublishedDate != null ? item.PublishedDate.Value.ToString("dd.MM.yyyy") : "-")
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="text-center">
+                                    <a class="btn btn-inverse-primary btn-icon" title="Details">
+                                        <i class="mdi mdi-eye"></i>
+                                    </a>
+                                    <a class="btn btn-inverse-warning btn-icon" title="Edit">
+                                        <i class="mdi mdi-pencil"></i>
+                                    </a>
+                                    <a class="btn btn-inverse-danger btn-icon" title="Delete">
+                                        <i class="mdi mdi-delete"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

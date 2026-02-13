@@ -8,5 +8,6 @@ namespace BookNest.Core.Entities
         public string? Biography { get; set; }
         public string? PhotoUrl { get; set; }
         public ICollection<Book>? Books { get; set; }
+        public ICollection<BookAuthor>? BookAuthors { get; set; }
     }
 }
