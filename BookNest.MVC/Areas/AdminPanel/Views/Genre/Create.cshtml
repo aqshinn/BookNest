@@ -1,0 +1,26 @@
+﻿@model Genre
+@{
+    ViewData["Title"] = "New Genre";
+}
+
+<div class="col-md-6 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Yeni Janr Yarat</h4>
+            <p class="card-description">
+                Please enter the name of the genre.
+            </p>
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <form class="forms-sample" method="post">
+                <div class="form-group">
+                    <label asp-for="Name">Genre Name</label>
+                    <input asp-for="Name" class="form-control" placeholder="For example: Fantasy">
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary me-2">Create</button>
+                <a asp-action="Index" class="btn btn-light">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>

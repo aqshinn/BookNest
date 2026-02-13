@@ -1,0 +1,28 @@
+﻿@model Genre
+@{
+    ViewData["Title"] = "Update Genre";
+}
+
+<div class="col-md-6 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Update Genre</h4>
+            <p class="card-description">
+                Change the name and click "Save" button.
+            </p>
+
+            <form class="forms-sample" method="post" asp-action="Update">
+                <input type="hidden" asp-for="Id" />
+
+                <div class="form-group">
+                    <label asp-for="Name">Genre Name</label>
+                    <input asp-for="Name" class="form-control">
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-warning me-2 text-white">Save</button>
+                <a asp-action="Index" class="btn btn-light">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
