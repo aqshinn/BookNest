@@ -1,4 +1,5 @@
 ﻿using BookNest.Core.Entities;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace BookNest.Business.Interfaces
 {
@@ -9,5 +10,6 @@ namespace BookNest.Business.Interfaces
         Task CreateAsync(Genre genre);
         Task UpdateAsync(Genre genre);
         Task DeleteAsync(int id);
+        Task<List<SelectListItem>> GetGenresForSelectAsync();
     }
 }

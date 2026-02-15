@@ -1,6 +1,7 @@
 ﻿using BookNest.Business.Interfaces;
 using BookNest.Core.Entities;
 using BookNest.Data.Data;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookNest.Business.Services
@@ -48,6 +49,18 @@ namespace BookNest.Business.Services
                 genre.IsDeleted = true;
                 await _context.SaveChangesAsync();
             }
+        }
+
+        public async Task<List<SelectListItem>> GetGenresForSelectAsync()
+        {
+            return await _context.Genres
+                .Where(g => !g.IsDeleted)
+                .Select(g => new SelectListItem
+                {
+                    Text = g.Name,
+                    Value = g.Id.ToString()
+                })
+                .ToListAsync();
         }
 
 

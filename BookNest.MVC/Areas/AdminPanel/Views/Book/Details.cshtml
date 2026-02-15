@@ -1,0 +1,54 @@
+﻿@using BookNest.Core.Entities
+@model Book
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Book Details</h4>
+
+        <div class="row">
+            <div class="col-md-4">
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <img src="~/uploads/books/@Model.ImageUrl" class="img-fluid rounded" style="width: 100%; object-fit: cover;" />
+                }
+                else
+                {
+                    <img src="~/admin/images/no-image.png" class="img-fluid rounded" />
+                }
+            </div>
+
+            <div class="col-md-8">
+                <h2>@Model.Title</h2>
+                <hr />
+
+                <p><strong>Description:</strong> <br /> @Model.Description</p>
+
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <p><i class="mdi mdi-translate text-primary"></i> <strong>Language:</strong> @(Model.Language ?? "-")</p>
+                        <p><i class="mdi mdi-book-open-page-variant text-warning"></i> <strong>Page Count:</strong> @Model.PageCount</p>
+                        <p><i class="mdi mdi-calendar text-success"></i> <strong>Published Date:</strong> @(Model.PublishedDate?.ToString("dd.MM.yyyy") ?? "-")</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Genres:</strong></p>
+                        @foreach (var item in Model.BookGenres)
+                        {
+                            <span class="badge badge-outline-info">@item.Genre.Name</span>
+                        }
+
+                        <p class="mt-3"><strong>Authors:</strong></p>
+                        @foreach (var item in Model.BookAuthors)
+                        {
+                            <span class="badge badge-outline-success">@item.Author.FullName</span>
+                        }
+                    </div>
+                </div>
+
+                <div class="mt-5">
+                    <a asp-action="Update" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+                    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -14,7 +14,6 @@ namespace BookNest.Core.Entities
 
         public string? ImageUrl { get; set; } 
 
-        public ICollection<BookImage>? BookImages { get; set; }
         public ICollection<BookGenre>? BookGenres { get; set; }
         public ICollection<BookAuthor>? BookAuthors { get; set; }
     }

@@ -1,6 +1,7 @@
 ﻿using BookNest.Business.Interfaces;
 using BookNest.Core.Entities;
 using BookNest.Data.Data;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookNest.Business.Services
@@ -48,6 +49,18 @@ namespace BookNest.Business.Services
                 author.IsDeleted = true;
                 await _context.SaveChangesAsync();
             }
+        }
+
+        public async Task<List<SelectListItem>> GetAuthorsForSelectAsync()
+        {
+            return await _context.Authors
+                .Where(a => !a.IsDeleted)
+                .Select(a => new SelectListItem
+                {
+                    Text = a.FullName,
+                    Value = a.Id.ToString()
+                })
+                .ToListAsync();
         }
     }
 }

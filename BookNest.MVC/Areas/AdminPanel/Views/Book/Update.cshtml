@@ -1,0 +1,72 @@
+﻿@using BookNest.MVC.Areas.AdminPanel.ViewModels
+@model BookEditVM
+
+<div class="col-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Update Book</h4>
+
+            <form class="forms-sample" method="post" enctype="multipart/form-data">
+
+                <div class="form-group">
+                    <label>Existing Image</label>
+                    <div class="mb-2">
+                        @if (!string.IsNullOrEmpty(Model.ExistingImageUrl))
+                        {
+                            <img src="~/uploads/books/@Model.ExistingImageUrl" style="width:150px; border-radius:10px;" />
+                        }
+                        else
+                        {
+                            <span class="text-muted">Image not available</span>
+                        }
+                    </div>
+                    <label asp-for="NewPhoto">New Image (Leave empty if you don't want to change)</label>
+                    <input asp-for="NewPhoto" class="form-control file-upload-info" accept="image/*">
+                    <span asp-validation-for="NewPhoto" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Title">Title</label>
+                    <input asp-for="Title" class="form-control" placeholder="Book Title">
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Description">Description</label>
+                    <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 form-group">
+                        <label asp-for="PageCount">Page Count</label>
+                        <input asp-for="PageCount" class="form-control">
+                    </div>
+                    <div class="col-md-4 form-group">
+                        <label asp-for="Language">Language</label>
+                        <input asp-for="Language" class="form-control">
+                    </div>
+                    <div class="col-md-4 form-group">
+                        <label asp-for="PublishedDate">Published Date</label>
+                        <input asp-for="PublishedDate" class="form-control" type="date">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Genres</label>
+                    <select asp-for="GenreIds" asp-items="Model.Genres" class="form-control" multiple>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Authors</label>
+                    <select asp-for="AuthorIds" asp-items="Model.Authors" class="form-control" multiple>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary mr-2">Save</button>
+                <a asp-action="Index" class="btn btn-light">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
