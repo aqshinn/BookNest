@@ -12,6 +12,8 @@ namespace BookNest.MVC.Areas.AdminPanel.Controllers
     [Area("AdminPanel")]
     public class BookController : Controller
     {
+        private const string _folderPath = "uploads/books";
+
         private readonly AppDbContext _context;
         private readonly IGenreService _genreService;
         private readonly IAuthorService _authorService;
@@ -89,7 +91,7 @@ namespace BookNest.MVC.Areas.AdminPanel.Controllers
                 }
 
                 
-                imageFileName = await _fileService.UploadAsync(model.Photo, _env.WebRootPath, "uploads/books");
+                imageFileName = await _fileService.UploadAsync(model.Photo, _env.WebRootPath, _folderPath);
             }
 
             Book book = new Book
@@ -220,11 +222,11 @@ namespace BookNest.MVC.Areas.AdminPanel.Controllers
                 
                 if (!string.IsNullOrEmpty(book.ImageUrl))
                 {
-                    _fileService.Delete(_env.WebRootPath, "uploads/books", book.ImageUrl);
+                    _fileService.Delete(_env.WebRootPath, _folderPath, book.ImageUrl);
                 }
 
                 
-                book.ImageUrl = await _fileService.UploadAsync(model.NewPhoto, _env.WebRootPath, "uploads/books");
+                book.ImageUrl = await _fileService.UploadAsync(model.NewPhoto, _env.WebRootPath, _folderPath);
             }
 
             book.Title = model.Title;

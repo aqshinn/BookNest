@@ -1,0 +1,44 @@
+﻿@model List<BookNest.Core.Entities.Book>
+
+<div class="row row-cols-2 row-cols-md-4 row-cols-lg-5 g-3">
+    @foreach (var item in Model)
+    {
+        <div class="col">
+            <div class="book-card position-relative shadow-sm rounded overflow-hidden h-100">
+
+                <a href="#" class="d-block h-100">
+                    @if (!string.IsNullOrEmpty(item.ImageUrl))
+                    {
+                        <img src="~/uploads/books/@item.ImageUrl" class="w-100 h-100" style="object-fit: cover; aspect-ratio: 2/3; border: 1px solid rgba(255,255,255,0.1);" alt="@item.Title">
+                    }
+                    else
+                    {
+                        <div class="bg-secondary d-flex align-items-center justify-content-center" style="aspect-ratio: 2/3;">
+                            <span class="text-white small">No Image</span>
+                        </div>
+                    }
+
+                    <div class="book-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center opacity-0 hover-opacity-100"
+                         style="background: rgba(0,0,0,0.7); transition: 0.3s;">
+                        <span class="text-white text-center px-2 fw-bold">@item.Title</span>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+    }
+</div>
+
+<style>
+
+    .book-card:hover {
+        transform: scale(1.05);
+        border: 2px solid var(--accent-green);
+        transition: 0.2s;
+        z-index: 10;
+    }
+
+        .book-card:hover .book-overlay {
+            opacity: 1 !important;
+        }
+</style>
