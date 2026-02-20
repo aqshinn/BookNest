@@ -1,4 +1,10 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@using BookNest.Core.Entities
+@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
+
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -24,8 +30,27 @@
                 <a href="#"><span class="nav-icons">🧭</span> Browse</a>
             </div>
 
-            <div class="profile-section">
-                <div style="width: 35px; height: 35px; border-radius: 50%; background: var(--primary-gold); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">JD</div>
+            <div class="profile-section" style="display: flex; gap: 15px; align-items: center;">
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    // Daxil olan istifadəçini tapırıq
+                    var currentUser = await UserManager.GetUserAsync(User);
+                    var fullName = currentUser?.FullName ?? "User";
+
+                    // Adın və Soyadın ilk hərflərini götürürük (Məs: "Ali Vəliyev" -> "AV")
+                    var initials = string.Join("", fullName.Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2).Select(n => n[0])).ToUpper();
+
+                    <div style="width: 35px; height: 35px; border-radius: 50%; background: var(--primary-gold); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;" title="@fullName">
+                        @initials
+                    </div>
+
+                    <a asp-controller="Account" asp-action="Logout" style="padding: 6px 15px; border-radius: 20px; font-size: 13px; font-weight: 500; text-decoration: none; border: 1px solid var(--text-dark); color: var(--text-dark);">Logout</a>
+                }
+                else
+                {
+                    <a asp-controller="Account" asp-action="Login" style="font-weight: 600; font-size: 14px; color: var(--text-dark); text-decoration: none;">Sign In</a>
+                    <a asp-controller="Account" asp-action="Register" style="background: #5C4B33; color: white; padding: 8px 18px; border-radius: 20px; font-size: 14px; text-decoration: none;">Sign Up</a>
+                }
             </div>
         </nav>
 

@@ -1,0 +1,316 @@
+﻿@model BookNest.MVC.ViewModels.RegisterVM
+@{
+    Layout = null; // Bu səhifənin öz xüsusi dizaynı olduğu üçün ümumi Layout-u ləğv edirik
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account - BookNest</title>
+    <style>
+        @@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap');
+
+        :root {
+            --bg-color: #F8F6EE;
+            --text-dark: #4A3C2A;
+            --text-light: #A39683;
+            --input-bg: #EFEBD7;
+            --btn-dark: #5C4B33;
+            --font-serif: 'Playfair Display', serif;
+            --font-sans: 'Inter', sans-serif;
+            --danger: #D93838;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            font-family: var(--font-sans);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .register-container {
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        /* Headers & Logo */
+        .greeting {
+            font-size: 18px;
+            margin-bottom: 5px;
+            font-weight: 400;
+        }
+
+        .logo {
+            font-size: 42px;
+            margin-bottom: 25px;
+            letter-spacing: -0.5px;
+        }
+
+            .logo .ocean {
+                font-weight: 300;
+                color: var(--text-light);
+            }
+
+            .logo .library {
+                font-weight: 600;
+                color: var(--text-dark);
+            }
+
+        .page-title {
+            font-family: var(--font-serif);
+            font-size: 24px;
+            margin-bottom: 40px;
+            font-weight: 500;
+        }
+
+        /* Form Elements */
+        .form-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+            .form-group label {
+                display: block;
+                font-size: 15px;
+                margin-bottom: 8px;
+                color: var(--text-dark);
+                margin-left: 5px;
+            }
+
+            .form-group input {
+                width: 100%;
+                padding: 14px 20px;
+                border: none;
+                border-radius: 25px;
+                background-color: var(--input-bg);
+                font-size: 15px;
+                font-family: var(--font-sans);
+                color: var(--text-dark);
+                outline: none;
+            }
+
+        /* Password hints & Checkbox */
+        .password-hints {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: -5px;
+            margin-bottom: 30px;
+            text-align: left;
+            font-size: 12px;
+            color: var(--text-dark);
+            margin-left: 5px;
+        }
+
+        .hint-text {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hint-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 14px;
+            height: 14px;
+            border: 1px solid var(--text-dark);
+            border-radius: 50%;
+            font-style: normal;
+            font-size: 9px;
+            font-family: sans-serif;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+            .checkbox-group input {
+                accent-color: var(--text-dark);
+                width: 14px;
+                height: 14px;
+                cursor: pointer;
+            }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            width: 180px;
+            padding: 12px 0;
+            border-radius: 30px;
+            font-size: 15px;
+            font-weight: 400;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: var(--font-sans);
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background-color: var(--btn-dark);
+            color: #fff;
+            border: none;
+            margin-bottom: 30px;
+        }
+
+            .btn-primary:hover {
+                opacity: 0.9;
+                transform: translateY(-2px);
+            }
+
+        /* Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--text-dark);
+            font-size: 15px;
+        }
+
+            .divider::before,
+            .divider::after {
+                content: '';
+                flex: 1;
+                border-bottom: 1px solid #C5BCAD;
+            }
+
+            .divider::before {
+                margin-right: 15px;
+            }
+
+            .divider::after {
+                margin-left: 15px;
+            }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--text-dark);
+            border: 1px solid #C5BCAD;
+        }
+
+            .btn-outline:hover {
+                background-color: var(--input-bg);
+            }
+
+        /* Validation Messages */
+        .text-danger {
+            color: var(--danger);
+            font-size: 12px;
+            margin-left: 10px;
+            display: block;
+            margin-top: 5px;
+        }
+
+        .validation-summary-errors {
+            color: var(--danger);
+            font-size: 14px;
+            text-align: left;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(217, 56, 56, 0.1);
+            border-radius: 15px;
+            list-style: none;
+        }
+
+            .validation-summary-errors ul {
+                list-style: none;
+                padding-left: 0;
+            }
+    </style>
+</head>
+<body>
+
+    <div class="register-container">
+
+        <div class="greeting">Hello new comers,</div>
+        <div class="logo">
+            <span class="ocean">book</span><span class="library">nest</span>
+        </div>
+
+        <div class="page-title">Create Account</div>
+
+        <form asp-controller="Account" asp-action="Register" method="post">
+
+            <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+
+            <div class="form-group">
+                <label>Your first and last name</label>
+                <input asp-for="FullName" required placeholder="John Doe">
+                <span asp-validation-for="FullName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label>Username</label>
+                <input asp-for="UserName" required placeholder="johndoe123">
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label>Email</label>
+                <input asp-for="Email" type="email" required placeholder="john@example.com">
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                <input asp-for="Password" type="password" id="passwordInput" required placeholder="••••••••">
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label>Confirm Password</label>
+                <input asp-for="ConfirmPassword" type="password" id="confirmPasswordInput" required placeholder="••••••••">
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+
+            <div class="password-hints">
+                <div class="hint-text">
+                    <i class="hint-icon">i</i> Password must be at least 8 characters
+                </div>
+                <label class="checkbox-group">
+                    <input type="checkbox" onclick="togglePassword()">
+                    Show passwords
+                </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Create Account</button>
+        </form>
+
+        <div class="divider">Already have an account?</div>
+
+        <a asp-controller="Account" asp-action="Login" class="btn btn-outline">Sign In</a>
+    </div>
+
+    <script>
+        function togglePassword() {
+            var passField = document.getElementById("passwordInput");
+            var confirmField = document.getElementById("confirmPasswordInput");
+
+            if (passField.type === "password") {
+                passField.type = "text";
+                confirmField.type = "text";
+            } else {
+                passField.type = "password";
+                confirmField.type = "password";
+            }
+        }
+    </script>
+</body>
+</html>

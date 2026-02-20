@@ -1,10 +1,11 @@
 ﻿using BookNest.Core.Entities;
 using BookNest.Core.Entities.Common;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookNest.Data.Data
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext<AppUser>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
@@ -16,6 +17,7 @@ namespace BookNest.Data.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<BookAuthor>()
                 .HasOne(ba => ba.Book)
@@ -42,7 +44,6 @@ namespace BookNest.Data.Data
                 .HasForeignKey(bg => bg.GenreId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            base.OnModelCreating(modelBuilder);
         }
 
     }

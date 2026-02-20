@@ -1,0 +1,275 @@
+﻿@model BookNest.MVC.ViewModels.LoginVM
+@{
+    Layout = null; // Öz xüsusi dizaynı var
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - BookNest</title>
+    <style>
+        @@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap');
+
+        :root {
+            --bg-color: #F8F6EE;
+            --text-dark: #4A3C2A;
+            --text-light: #A39683;
+            --input-bg: #EFEBD7;
+            --btn-dark: #5C4B33;
+            --font-serif: 'Playfair Display', serif;
+            --font-sans: 'Inter', sans-serif;
+            --danger: #D93838;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            font-family: var(--font-sans);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        /* Headers & Logo */
+        .greeting {
+            font-size: 18px;
+            margin-bottom: 5px;
+            font-weight: 400;
+        }
+
+        .logo {
+            font-size: 42px;
+            margin-bottom: 25px;
+            letter-spacing: -0.5px;
+        }
+
+            .logo .ocean {
+                font-weight: 300;
+                color: var(--text-light);
+            }
+
+            .logo .library {
+                font-weight: 600;
+                color: var(--text-dark);
+            }
+
+        .page-title {
+            font-family: var(--font-serif);
+            font-size: 22px;
+            margin-bottom: 40px;
+            font-weight: 500;
+        }
+
+        /* Form Elements */
+        .form-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+            .form-group label {
+                display: block;
+                font-size: 16px;
+                margin-bottom: 8px;
+                color: var(--text-dark);
+                margin-left: 5px;
+            }
+
+            .form-group input[type="text"],
+            .form-group input[type="password"] {
+                width: 100%;
+                padding: 14px 20px;
+                border: none;
+                border-radius: 25px;
+                background-color: var(--input-bg);
+                font-size: 15px;
+                font-family: var(--font-sans);
+                color: var(--text-dark);
+                outline: none;
+            }
+
+        /* Remember Me & Forgot Password Row */
+        .options-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: -5px;
+            margin-bottom: 30px;
+            padding: 0 5px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+            .checkbox-group input {
+                accent-color: var(--text-dark);
+                width: 14px;
+                height: 14px;
+                cursor: pointer;
+            }
+
+        .forgot-password a {
+            font-size: 13px;
+            color: var(--text-dark);
+            text-decoration: none;
+        }
+
+            .forgot-password a:hover {
+                text-decoration: underline;
+            }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            width: 200px;
+            padding: 12px 0;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 400;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: var(--font-sans);
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background-color: var(--btn-dark);
+            color: #fff;
+            border: none;
+            margin-bottom: 35px;
+        }
+
+            .btn-primary:hover {
+                opacity: 0.9;
+                transform: translateY(-2px);
+            }
+
+        /* Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--text-dark);
+            font-size: 16px;
+        }
+
+            .divider::before,
+            .divider::after {
+                content: '';
+                flex: 1;
+                border-bottom: 1px solid #C5BCAD;
+            }
+
+            .divider::before {
+                margin-right: 15px;
+            }
+
+            .divider::after {
+                margin-left: 15px;
+            }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--text-dark);
+            border: 1px solid #C5BCAD;
+        }
+
+            .btn-outline:hover {
+                background-color: var(--input-bg);
+            }
+
+        /* Validation Messages */
+        .text-danger {
+            color: var(--danger);
+            font-size: 12px;
+            margin-left: 10px;
+            display: block;
+            margin-top: 5px;
+        }
+
+        .validation-summary-errors {
+            color: var(--danger);
+            font-size: 14px;
+            text-align: left;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(217, 56, 56, 0.1);
+            border-radius: 15px;
+            list-style: none;
+        }
+
+            .validation-summary-errors ul {
+                list-style: none;
+                padding-left: 0;
+            }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+
+        <div class="greeting">Welcome back to,</div>
+        <div class="logo">
+            <span class="ocean">book</span><span class="library">nest</span>
+        </div>
+
+        <div class="page-title">Sign In</div>
+
+        <form asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Context.Request.Query["returnUrl"]" method="post">
+
+            <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+
+            <div class="form-group">
+                <label>Username or Email</label>
+                <input asp-for="UserNameOrEmail" type="text" required placeholder="john@example.com">
+                <span asp-validation-for="UserNameOrEmail" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                <input asp-for="Password" type="password" required placeholder="••••••••">
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="options-row">
+                <label class="checkbox-group">
+                    <input asp-for="RememberMe">
+                    Remember me
+                </label>
+
+                <div class="forgot-password">
+                    <a href="#">Forgot your password?</a>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Sign In</button>
+        </form>
+
+        <div class="divider">New to booknest?</div>
+
+        <a asp-controller="Account" asp-action="Register" class="btn btn-outline">Sign Up</a>
+    </div>
+
+</body>
+</html>

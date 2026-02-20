@@ -25,7 +25,6 @@
     <Folder Include="Areas\AdminPanel\Data\" />
     <Folder Include="Areas\AdminPanel\Models\" />
     <Folder Include="Models\" />
-    <Folder Include="ViewModels\" />
     <Folder Include="wwwroot\uploads\books\" />
     <Folder Include="wwwroot\uploads\authors\" />
     <Folder Include="wwwroot\uploads\sliders\" />
