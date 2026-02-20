@@ -1,61 +1,82 @@
 ﻿<!DOCTYPE html>
-<html lang="en-gb">
+<html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - BookNest</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="~/admin/css/site.css" rel="stylesheet">
-    <style>
-        /* Sadə Footer bərkitmə stili */
-        body {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
 
-        main {
-            flex: 1;
-        }
-    </style>
+    <link href="~/admin/css/site.css" rel="stylesheet" asp-append-version="true" />
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom py-3">
-        <div class="container">
-            <a class="navbar-brand fw-bold" asp-controller="Home" asp-action="Index">📚 BookNest</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" asp-controller="Home" asp-action="Index">Home Page</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Books</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Authors</a>
-                    </li>
-                    <li class="nav-item ms-3">
-                        <a class="btn btn-outline-light btn-sm" href="#">Login</a>
-                    </li>
-                </ul>
+
+    <div class="container">
+        <nav class="navbar">
+            <a asp-controller="Home" asp-action="Index" class="logo">booknest</a>
+
+            <div class="search-container">
+                <input type="text" placeholder="Search book name, author,...">
             </div>
-        </div>
-    </nav>
 
-    <main role="main" class="pb-3">
-        @RenderBody()
-    </main>
+            <div class="nav-links">
+                <a asp-controller="Home" asp-action="Index" class="active"><span class="nav-icons">🏠</span> Home</a>
+                <a href="#"><span class="nav-icons">📚</span> Book Shelf</a>
+                <a href="#"><span class="nav-icons">👥</span> Community</a>
+                <a href="#"><span class="nav-icons">🧭</span> Browse</a>
+            </div>
 
-    <footer class="bg-dark text-white py-4 mt-auto">
-        <div class="container text-center">
-            <p class="mb-0">&copy; 2026 - BookNest. All rights reserved.</p>
+            <div class="profile-section">
+                <div style="width: 35px; height: 35px; border-radius: 50%; background: var(--primary-gold); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">JD</div>
+            </div>
+        </nav>
+
+        <main role="main">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>Company</h4>
+                    <ul>
+                        <li>About Us</li>
+                        <li>Career</li>
+                        <li>Terms</li>
+                        <li>Privacy</li>
+                        <li>Internet based Ads</li>
+                        <li>Ad Preference</li>
+                        <li>Help</li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Work with us</h4>
+                    <ul>
+                        <li>Authors</li>
+                        <li>Advertise</li>
+                        <li>Authors & Ads Blog</li>
+                        <li>API</li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Connect</h4>
+                    <div class="social-links">
+                        <span>FB</span><span>TW</span><span>IG</span><span>IN</span>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <div class="app-buttons">
+                        <div style="margin-bottom: 10px;">App Store</div>
+                        <div>Google Play</div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                &copy; 2026 BookNest, Inc.
+            </div>
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

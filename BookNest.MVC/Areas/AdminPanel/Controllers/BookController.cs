@@ -235,22 +235,40 @@ namespace BookNest.MVC.Areas.AdminPanel.Controllers
             book.Language = model.Language;
             book.PublishedDate = model.PublishedDate;
 
-            
-            book.BookGenres.Clear();
-            if (model.GenreIds != null)
+            var selectedAuthorIds = model.AuthorIds ?? new List<int>();
+
+            var authorsToRemove = book.BookAuthors
+                .Where(ba => !selectedAuthorIds.Contains(ba.AuthorId)).ToList();
+
+            foreach (var item in authorsToRemove)
             {
-                foreach (var genreId in model.GenreIds)
+                _context.Remove(item); 
+            }
+
+            foreach (var authorId in selectedAuthorIds)
+            {
+                if (!book.BookAuthors.Any(ba => ba.AuthorId == authorId))
                 {
-                    book.BookGenres.Add(new BookGenre { GenreId = genreId });
+                    book.BookAuthors.Add(new BookAuthor { AuthorId = authorId });
                 }
             }
 
-            book.BookAuthors.Clear();
-            if (model.AuthorIds != null)
+            var selectedGenreIds = model.GenreIds ?? new List<int>();
+
+            var genresToRemove = book.BookGenres
+                .Where(bg => !selectedGenreIds.Contains(bg.GenreId))
+                .ToList();
+
+            foreach (var item in genresToRemove)
             {
-                foreach (var authorId in model.AuthorIds)
+                _context.Remove(item);
+            }
+
+            foreach (var genreId in selectedGenreIds)
+            {
+                if (!book.BookGenres.Any(bg => bg.GenreId == genreId))
                 {
-                    book.BookAuthors.Add(new BookAuthor { AuthorId = authorId });
+                    book.BookGenres.Add(new BookGenre { GenreId = genreId });
                 }
             }
 

@@ -1,0 +1,156 @@
+﻿@using BookNest.Core.Entities
+@model Book
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="book-hero">
+    <div class="hero-left">
+        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+        {
+            <img src="~/uploads/books/@Model.ImageUrl" alt="@Model.Title">
+        }
+        else
+        {
+            <div style="width: 100%; height: 350px; background: #eee; border-radius: 6px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">No Cover</div>
+        }
+        
+        <h3>@Model.Title</h3>
+        <div class="stars">★★★★★</div>
+        
+        <button class="buy-btn outline">Add to List</button>
+        <button class="buy-btn">Start Reading</button>
+    </div>
+    
+    <div class="hero-right">
+        <h1>@Model.Title</h1>
+        <div class="author-name">
+            @(string.Join(", ", Model.BookAuthors.Select(ba => ba.Author.FullName)))
+        </div>
+        <div class="publish-date">Published Date: @(Model.PublishedDate?.ToString("d MMMM yyyy") ?? "Unknown")</div>
+
+        <div class="desc-body">
+            @Model.Description
+        </div>
+
+        <div class="genre-tags">
+            <strong>GENRES :</strong> 
+            @string.Join(" | ", Model.BookGenres.Select(bg => bg.Genre.Name))
+        </div>
+
+        <div class="reading-stats">
+            <div class="stat-item">
+                <div class="avatars">
+                    <img src="https://randomuser.me/api/portraits/women/1.jpg">
+                    <img src="https://randomuser.me/api/portraits/men/2.jpg">
+                    <img src="https://randomuser.me/api/portraits/women/3.jpg">
+                </div>
+                70.8k people are currently reading
+            </div>
+            <div class="stat-item">
+                <div class="avatars">
+                    <img src="https://randomuser.me/api/portraits/women/4.jpg">
+                    <img src="https://randomuser.me/api/portraits/men/5.jpg">
+                </div>
+                72k people wanted to read
+            </div>
+        </div>
+    </div>
+</div>
+
+</div> <div class="tab-bar-wrapper">
+    <div class="container">
+        <div class="tab-bar">
+            <div class="tab-btn active" onclick="switchTab('details', this)">
+                <div class="tab-icon">!</div>
+                Book Details
+            </div>
+            <div class="tab-btn" onclick="switchTab('reviews', this)">
+                <div class="tab-icon">💬</div>
+                Reviews
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container"> <div id="tab-details" class="details-content">
+    <div class="section-title"><h2>Kitab Haqqında Əlavə Məlumat</h2></div>
+
+    <h3>Müəllif Haqqında</h3>
+    <div class="author-section">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Tolkien_1916.jpg/220px-Tolkien_1916.jpg" alt="Author">
+        <div class="author-info">
+            Bu kitabın müəllifləri haqqında detallı bioqrafiya yaxın zamanda bura əlavə ediləcək...
+        </div>
+    </div>
+
+    <h3>Book Information</h3>
+    <table class="book-data-table">
+        <tr>
+            <td>Page Count</td>
+            <td>@Model.PageCount pages</td>
+        </tr>
+        <tr>
+            <td>Published Date</td>
+            <td>@(Model.PublishedDate?.ToString("d MMMM yyyy") ?? "-")</td>
+        </tr>
+        <tr>
+            <td>Language</td>
+            <td>@(Model.Language ?? "Eng")</td>
+        </tr>
+    </table>
+</div>
+
+<div id="tab-reviews" class="details-content hidden">
+    <div class="section-title"><h2>İstifadəçi Rəyləri</h2></div>
+
+    <div class="reviews-controls">
+        <div class="review-pill pill-light">✎ Rəy Yaz</div>
+        <div class="review-pill pill-dark">Populyar Rəylər</div>
+    </div>
+
+    <div class="review-card">
+        <div class="reviewer-info">
+            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User">
+            <div class="reviewer-name">Andrea James</div>
+            <div class="badge">✎ Top Reviewer</div>
+        </div>
+        <div class="review-text">
+            This book is simply amazing! From the first page, it drew me in and I couldn't put it down until the end.
+            The flow of events and character development are very well done.
+            <div class="review-actions">
+                <span>♡ Like (23)</span>
+                <span>💬 Comment (2)</span>
+                <div class="review-stars">★★★★★</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div> <div class="similar-books">
+    <div class="container">
+        <h2>Similar Books</h2>
+        @await Component.InvokeAsync("FeaturedBooks")
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function switchTab(tabId, element) {
+            // Tab məzmunlarını gizlət
+            document.getElementById('tab-details').classList.add('hidden');
+            document.getElementById('tab-reviews').classList.add('hidden');
+
+            // Bütün düymələrdən active class-ını sil
+            let buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // Seçilən tabı göstər
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+
+            // Düyməyə active class-ı ver
+            element.classList.add('active');
+        }
+    </script>
+}

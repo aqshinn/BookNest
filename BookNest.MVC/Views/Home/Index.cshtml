@@ -1,34 +1,45 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-<div class="jumbotron p-5 mb-4 rounded-3 shadow-sm hero-section position-relative overflow-hidden">
-    <div class="hero-bg" style="background-image: url('https://images.unsplash.com/photo-1507842217121-9e96e47b86aa?q=80&w=2670&auto=format&fit=crop');"></div>
 
-    <div class="hero-overlay"></div>
+<section class="welcome-section">
+    <h1>Welcome to BookNest</h1>
+    <p>Meet your favorite book, find your reading community, and manage your reading life.</p>
+</section>
 
-    <div class="container-fluid py-5 text-center position-relative" style="z-index: 2;">
-        <h1 class="display-4 fw-bold text-white mb-3">Welcome to BookNest!</h1>
-        <p class="col-md-8 fs-5 mx-auto text-light opacity-75 mb-4">
-            Find the perfect book to read, leave reviews, and join our community.
-        </p>
-        <button class="btn btn-letterboxd btn-lg px-4 py-2">Explore Books</button>
+<section>
+    <div class="section-header">
+        <h2>Popular now</h2>
     </div>
-</div>
-
-<div class="container">
-    <div class="d-flex justify-content-between align-items-center mb-3 mt-5">
-        <h3 class="fw-bold">🔥 Featured Books</h3>
-        <a href="#" class="text-decoration-none">View All &rarr;</a>
-    </div>
-
     @await Component.InvokeAsync("FeaturedBooks")
+</section>
 
-    <hr class="my-5" />
-
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3 class="fw-bold">✨ New Arrivals</h3>
-        <a href="#" class="text-decoration-none">View All &rarr;</a>
+<section class="trending-container">
+    <div class="section-header">
+        <h2>Trending this week</h2>
     </div>
+    <div class="trending-card">
+        <div class="trending-cover" style="position: relative;">
+            <img src="https://m.media-amazon.com/images/I/61r-WomIz0L._AC_UF1000,1000_QL80_.jpg" alt="Sands of Eppia">
+            <div class="heart-icon red" style="bottom: 10px; right: 10px;">♥</div>
+        </div>
+        <div class="trending-info">
+            <h3>Sands of Eppla - Book 1</h3>
+            <div class="author">Janeal Falor</div>
+            <div class="stars">★★★★★</div>
+            <p>Cassandra lives in a world where you fall in love at first sight—or not at all. Too bad she's blind, and being blind makes her not only immune to love, but also a criminal...</p>
+            <div class="trending-actions">
+                <div>Read more ↗</div>
+                <div style="color: #666; font-size: 12px; font-weight: 500;">👁 Preview Book</div>
+            </div>
+        </div>
+    </div>
+</section>
 
+<section>
+    <div class="section-header">
+        <h2>Recommendation</h2>
+        <a href="#" class="more-link">More</a>
+    </div>
     @await Component.InvokeAsync("NewArrivals")
-</div>
+</section>
