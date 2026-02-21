@@ -31,7 +31,10 @@
         <div class="publish-date">Published Date: @(Model.PublishedDate?.ToString("d MMMM yyyy") ?? "Unknown")</div>
 
         <div class="desc-body">
-            @Model.Description
+            <div class="desc-text" id="bookDescription">
+                @Model.Description
+            </div>
+            <button class="show-more-btn" id="showMoreBtn" onclick="toggleDescription()">Show more ▾</button>
         </div>
 
         <div class="genre-tags">
@@ -138,19 +141,32 @@
 @section Scripts {
     <script>
         function switchTab(tabId, element) {
-            // Tab məzmunlarını gizlət
+            // Hide tab contents
             document.getElementById('tab-details').classList.add('hidden');
             document.getElementById('tab-reviews').classList.add('hidden');
 
-            // Bütün düymələrdən active class-ını sil
+            // Delete active class at all buttons
             let buttons = document.querySelectorAll('.tab-btn');
             buttons.forEach(btn => btn.classList.remove('active'));
 
-            // Seçilən tabı göstər
+            // Show selected tabs
             document.getElementById('tab-' + tabId).classList.remove('hidden');
 
-            // Düyməyə active class-ı ver
+            // Give active class to button
             element.classList.add('active');
+        }
+
+                function toggleDescription() {
+            var desc = document.getElementById("bookDescription");
+            var btn = document.getElementById("showMoreBtn");
+
+            desc.classList.toggle("expanded");
+
+            if (desc.classList.contains("expanded")) {
+                btn.innerHTML = "Show less ▴";
+            } else {
+                btn.innerHTML = "Show more ▾";
+            }
         }
     </script>
 }

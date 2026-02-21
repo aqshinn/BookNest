@@ -832,3 +832,32 @@ footer {
 .hidden {
     display: none;
 }
+
+
+/* Show more button for book description */
+.desc-text {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 4; /* Sadəcə 4 sətir görünəcək */
+    -webkit-box-orient: vertical;
+    transition: all 0.3s ease;
+}
+
+.desc-text.expanded {
+    -webkit-line-clamp: unset; /* Bütün sətirləri göstər */
+}
+
+.show-more-btn {
+    background: none;
+    border: none;
+    color: var(--primary-gold);
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+    margin-top: 5px;
+    font-size: 13px;
+}
+
+    .show-more-btn:hover {
+        text-decoration: underline;
+    }

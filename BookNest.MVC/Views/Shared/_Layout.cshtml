@@ -20,14 +20,16 @@
             <a asp-controller="Home" asp-action="Index" class="logo">booknest</a>
 
             <div class="search-container">
-                <input type="text" placeholder="Search book name, author,...">
+                <form asp-controller="Book" asp-action="Index" method="get">
+                    <input type="text" name="search" placeholder="Search book name, author,...">
+                </form>
             </div>
 
             <div class="nav-links">
                 <a asp-controller="Home" asp-action="Index" class="active"><span class="nav-icons">🏠</span> Home</a>
                 <a href="#"><span class="nav-icons">📚</span> Book Shelf</a>
                 <a href="#"><span class="nav-icons">👥</span> Community</a>
-                <a href="#"><span class="nav-icons">🧭</span> Browse</a>
+                <a asp-controller="Book" asp-action="Index" class="active"><span class="nav-icons">🧭</span> Browse</a>
             </div>
 
             <div class="profile-section" style="display: flex; gap: 15px; align-items: center;">
