@@ -14,6 +14,7 @@ namespace BookNest.Data.Data
         public DbSet<Genre> Genres { get; set; }
         public DbSet<BookGenre> BookGenres { get; set; }
         public DbSet<BookAuthor> BookAuthors { get; set; }
+        public DbSet<ReadingList> ReadingLists { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -29,9 +30,9 @@ namespace BookNest.Data.Data
                 .HasOne(ba => ba.Author)
                 .WithMany(a => a.BookAuthors)
                 .HasForeignKey(ba => ba.AuthorId)
-                .OnDelete(DeleteBehavior.Restrict); 
+                .OnDelete(DeleteBehavior.Restrict);
 
-            
+
             modelBuilder.Entity<BookGenre>()
                 .HasOne(bg => bg.Book)
                 .WithMany(b => b.BookGenres)
@@ -43,6 +44,18 @@ namespace BookNest.Data.Data
                 .WithMany(g => g.BookGenres)
                 .HasForeignKey(bg => bg.GenreId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ReadingList>()
+                .HasOne(rl => rl.Book)
+                .WithMany()
+                .HasForeignKey(rl => rl.BookId)
+                .OnDelete(DeleteBehavior.Cascade); // If the book is deleted, it should also be removed from the shelf.
+
+            modelBuilder.Entity<ReadingList>()
+                .HasOne(rl => rl.AppUser)
+                .WithMany()
+                .HasForeignKey(rl => rl.AppUserId)
+                .OnDelete(DeleteBehavior.Cascade); // If a user is deleted, their shelf will also be deleted.
 
         }
 

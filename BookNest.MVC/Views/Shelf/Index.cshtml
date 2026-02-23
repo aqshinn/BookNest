@@ -1,0 +1,299 @@
+﻿@model BookNest.MVC.ViewModels.ShelfVM
+
+@{
+    ViewData["Title"] = "My Book Shelf";
+}
+
+<style>
+    :root {
+        --shelf-header-bg: #EAE4D4;
+        --row-dark: #EBE5D5;
+        --row-light: #F6F4EB;
+        --tab-active-bg: #4A3C2A;
+        --header-text-color: #9D7B48;
+        --red-heart: #D93838;
+    }
+
+    /* --- Page Title & Tabs --- */
+    .shelf-header-section {
+        text-align: center;
+        padding: 50px 0;
+    }
+
+        .shelf-header-section h1 {
+            font-family: var(--font-serif);
+            font-size: 36px;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        .shelf-header-section p {
+            color: var(--text-gray);
+            font-size: 15px;
+            margin-bottom: 30px;
+        }
+
+    .tab-container {
+        display: inline-flex;
+        background-color: var(--shelf-header-bg);
+        border-radius: 40px;
+        padding: 5px;
+    }
+
+    .tab-btn {
+        padding: 12px 40px;
+        border-radius: 35px;
+        font-size: 15px;
+        font-weight: 500;
+        color: var(--text-gray);
+        transition: all 0.3s ease;
+        display: inline-block;
+    }
+
+        .tab-btn:hover {
+            color: var(--text-dark);
+        }
+
+        .tab-btn.active {
+            background-color: var(--tab-active-bg);
+            color: #fff;
+            pointer-events: none;
+        }
+
+    /* --- Book List Table (Grid) --- */
+    .full-width-bg {
+        width: 100%;
+    }
+
+    .bg-header {
+        background-color: var(--shelf-header-bg);
+        border-top: 1px solid #dcd6c6;
+        border-bottom: 1px solid #dcd6c6;
+    }
+
+    .bg-dark {
+        background-color: var(--row-dark);
+        border-bottom: 1px solid #e0d9c9;
+    }
+
+    .bg-light {
+        background-color: var(--row-light);
+        border-bottom: 1px solid #e8e5db;
+    }
+
+    .list-grid {
+        display: grid;
+        grid-template-columns: 120px 2fr 1fr 1.5fr 1.5fr 150px 80px;
+        gap: 30px;
+        align-items: center;
+        padding: 20px 0;
+    }
+
+    .list-header-row {
+        padding: 15px 0;
+    }
+
+    .header-col {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--header-text-color);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    /* Row Contents */
+    .book-cover-container {
+        position: relative;
+        width: 90px;
+    }
+
+        .book-cover-container img {
+            width: 100%;
+            border-radius: 4px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            display: block;
+            height: 135px;
+            object-fit: cover;
+        }
+
+    .heart-icon {
+        position: absolute;
+        bottom: -8px;
+        right: -8px;
+        width: 24px;
+        height: 24px;
+        background: var(--text-dark);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--red-heart);
+        font-size: 12px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .col-title .b-title {
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        color: var(--text-dark);
+        letter-spacing: 0.5px;
+    }
+
+    .col-title .b-author {
+        font-size: 13px;
+        font-style: italic;
+        font-family: var(--font-serif);
+        color: #9D7B48;
+        font-weight: 600;
+    }
+
+    .col-rating {
+        text-align: center;
+    }
+
+        .col-rating .score {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--text-dark);
+        }
+
+        .col-rating .stars {
+            color: var(--primary-gold);
+            font-size: 14px;
+            letter-spacing: 2px;
+        }
+
+    .col-date {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text-dark);
+    }
+
+    .col-action {
+        text-align: center;
+        cursor: pointer;
+        color: #9D7B48;
+        transition: opacity 0.2s;
+    }
+
+        .col-action:hover {
+            opacity: 0.7;
+        }
+
+        .col-action .icon {
+            font-size: 20px;
+            display: block;
+            margin-bottom: 5px;
+            color: var(--text-dark);
+        }
+
+        .col-action .action-text {
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+    .delete-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: #D93838;
+        font-size: 18px;
+        padding: 5px;
+        transition: opacity 0.2s;
+        font-weight: bold;
+    }
+
+    .delete-btn:hover {
+        opacity: 0.7;
+    }
+
+    .empty-shelf {
+        text-align: center;
+        padding: 60px 20px;
+        color: var(--text-gray);
+        font-size: 18px;
+    }
+</style>
+
+<div class="shelf-header-section container">
+    <h1>Your Book Shelf</h1>
+    <p>Track, rate, and review your favorite books</p>
+
+    <div class="tab-container">
+        <a asp-controller="Shelf" asp-action="Index" asp-route-statusId="1" class="tab-btn @(Model.CurrentStatus == 1 ? "active" : "")">To read</a>
+        <a asp-controller="Shelf" asp-action="Index" asp-route-statusId="2" class="tab-btn @(Model.CurrentStatus == 2 ? "active" : "")">Currently Reading</a>
+        <a asp-controller="Shelf" asp-action="Index" asp-route-statusId="3" class="tab-btn @(Model.CurrentStatus == 3 ? "active" : "")">Read</a>
+    </div>
+</div>
+
+<div class="full-width-bg bg-header">
+    <div class="container list-grid list-header-row">
+        <div></div>
+        <div class="header-col">Title & Author</div>
+        <div class="header-col" style="text-align: center;">Rating</div>
+        <div class="header-col">Added Date</div>
+        <div class="header-col">Read Date</div>
+        <div></div>
+    </div>
+</div>
+
+@if (Model.ReadingLists.Count == 0)
+{
+    <div class="empty-shelf container">
+        <p>No books found in this list yet.</p>
+        <a asp-controller="Book" asp-action="Index" style="display:inline-block; margin-top:15px; color:var(--text-dark); font-weight:bold; border-bottom:1px solid;">Browse Books ↗</a>
+    </div>
+}
+else
+{
+    int counter = 0;
+    foreach (var item in Model.ReadingLists)
+    {
+        // Tək və cüt sətirlər üçün fərqli arxa plan rəngi (sənin dizayndakı kimi)
+        string rowClass = (counter % 2 == 0) ? "bg-dark" : "bg-light";
+        counter++;
+
+        <div class="full-width-bg @rowClass">
+            <div class="container list-grid">
+
+                <div class="book-cover-container">
+                    <a asp-controller="Home" asp-action="Details" asp-route-id="@item.BookId">
+                        <img src="~/uploads/books/@item.Book.ImageUrl" alt="Cover">
+                    </a>
+                    <div class="heart-icon">♥</div>
+                </div>
+
+                <div class="col-title">
+                    <div class="b-title">@item.Book.Title</div>
+                    <div class="b-author">@(item.Book.BookAuthors.FirstOrDefault()?.Author.FullName ?? "Unknown Author")</div>
+                </div>
+
+                <div class="col-rating">
+                    <div class="score">0/5</div>
+                    <div class="stars">☆☆☆☆☆</div>
+                </div>
+
+                <div class="col-date">@item.AddedDate.ToString("MMMM dd, yyyy")</div>
+
+                <div class="col-date">
+                    @(item.FinishedDate.HasValue? item.FinishedDate.Value.ToString("MMMM dd, yyyy") : "-")
+                </div>
+
+                <div class="col-action">
+                    <span class="icon">💬</span>
+                    <span class="action-text">Post a review</span>
+                </div>
+
+                <form method="post" asp-action="RemoveFromShelf" asp-route-readingListId="@item.Id" asp-route-statusId="@Model.CurrentStatus" style="display: inline;">
+                    <button type="submit" class="delete-btn" title="Remove from shelf" onclick="return confirm('Are you sure you want to remove this book from your shelf?');">
+                        ✕
+                    </button>
+                </form>
+
+            </div>
+        </div>
+    }
+}

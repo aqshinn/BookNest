@@ -86,8 +86,19 @@ namespace BookNest.MVC.Controllers
                 return Redirect(returnUrl);
             }
 
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+            {
+                if (returnUrl.Contains("UpdateShelf", StringComparison.OrdinalIgnoreCase))
+                {
+                    return RedirectToAction("Index", "Book");
+                }
+
+                return Redirect(returnUrl);
+            }
+
             return RedirectToAction("Index", "Home");
         }
+        
 
         //Logout
         public async Task<IActionResult> Logout()

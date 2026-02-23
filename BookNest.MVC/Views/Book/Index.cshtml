@@ -277,7 +277,11 @@
                             <h4>@book.Title</h4>
                             <p>@(book.BookAuthors.FirstOrDefault()?.Author.FullName ?? "Unknown Author")</p>
                             <div class="stars">★★★★★</div>
-                            <button class="add-btn">+ Add to List</button>
+                            <form asp-controller="Shelf" asp-action="UpdateShelf" method="post">
+                                <input type="hidden" name="bookId" value="@book.Id" />
+                                <input type="hidden" name="newStatusId" value="1" />
+                                <button type="submit" class="add-btn">+ Add to List</button>
+                            </form>
                         </div>
                     }
                 </div>

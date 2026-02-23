@@ -1,4 +1,6 @@
 ﻿@using BookNest.Core.Entities
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<AppUser> SignInManager
 @model Book
 
 @{
@@ -19,8 +21,11 @@
         <h3>@Model.Title</h3>
         <div class="stars">★★★★★</div>
         
-        <button class="buy-btn outline">Add to List</button>
-        <button class="buy-btn">Start Reading</button>
+        <form asp-controller="Shelf" asp-action="UpdateShelf" method="post" style="display: inline;">
+            <input type="hidden" name="bookId" value="@Model.Id" />
+            <button type="submit" name="newStatusId" value="1" class="buy-btn outline">Add to List</button>
+            <button type="submit" name="newStatusId" value="2" class="buy-btn">Start Reading</button>
+        </form>
     </div>
     
     <div class="hero-right">
