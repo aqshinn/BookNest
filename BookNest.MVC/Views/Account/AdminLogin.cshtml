@@ -1,0 +1,301 @@
+@model BookNest.MVC.ViewModels.LoginVM
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Sign In - BookNest</title>
+    <style>
+        @@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap');
+
+        :root {
+            --bg-color: #F8F6EE;
+            --text-dark: #4A3C2A;
+            --text-light: #A39683;
+            --input-bg: #EFEBD7;
+            --btn-dark: #5C4B33;
+            --font-serif: 'Playfair Display', serif;
+            --font-sans: 'Inter', sans-serif;
+            --danger: #D93838;
+            --success: #2E7D32;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            font-family: var(--font-sans);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .greeting {
+            font-size: 16px;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .logo {
+            font-size: 42px;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+        .logo .ocean { font-weight: 300; color: var(--text-light); }
+        .logo .library { font-weight: 600; color: var(--text-dark); }
+
+        .page-title {
+            font-family: var(--font-serif);
+            font-size: 26px;
+            margin-bottom: 40px;
+            font-weight: 600;
+        }
+
+        .form-group { text-align: left; margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 15px; margin-bottom: 8px; color: var(--text-dark); margin-left: 5px; font-weight: 500; }
+        
+        .form-group input[type="text"],
+        .form-group input[type="password"] {
+            width: 100%; 
+            padding: 14px 20px; 
+            border: 2px solid transparent;
+            border-radius: 25px;
+            background-color: var(--input-bg); 
+            font-size: 15px; 
+            font-family: var(--font-sans); 
+            color: var(--text-dark); 
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group input[type="password"]:focus {
+            border-color: var(--btn-dark);
+            background-color: #fff;
+            box-shadow: 0 0 0 3px rgba(92, 75, 51, 0.1);
+        }
+
+        .options-row { 
+            display: flex; 
+            justify-content: flex-start; 
+            align-items: center; 
+            margin-top: -5px; 
+            margin-bottom: 30px; 
+            padding: 0 5px; 
+        }
+        
+        .checkbox-group { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            cursor: pointer; 
+            font-size: 14px; 
+            color: var(--text-dark); 
+        }
+        
+        .checkbox-group input { 
+            accent-color: var(--btn-dark); 
+            width: 16px; 
+            height: 16px; 
+            cursor: pointer; 
+        }
+
+        .btn {
+            display: inline-block; 
+            width: 100%; 
+            padding: 14px 0; 
+            border-radius: 30px;
+            font-size: 16px; 
+            font-weight: 500; 
+            cursor: pointer; 
+            transition: all 0.2s ease;
+            font-family: var(--font-sans); 
+            text-decoration: none;
+            border: none;
+        }
+        
+        .btn-primary { 
+            background-color: var(--btn-dark); 
+            color: #fff; 
+            margin-bottom: 30px; 
+            box-shadow: 0 4px 10px rgba(92, 75, 51, 0.2); 
+        }
+        
+        .btn-primary:hover { 
+            opacity: 0.9; 
+            transform: translateY(-2px); 
+            box-shadow: 0 6px 15px rgba(92, 75, 51, 0.3); 
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .divider { 
+            display: flex; 
+            align-items: center; 
+            text-align: center; 
+            margin-bottom: 30px; 
+            color: var(--text-light); 
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .divider::before, .divider::after { 
+            content: ''; 
+            flex: 1; 
+            border-bottom: 1px solid #C5BCAD; 
+        }
+        
+        .divider::before { margin-right: 15px; }
+        .divider::after { margin-left: 15px; }
+
+        .link-group {
+            display: flex;
+            gap: 10px;
+            flex-direction: column;
+        }
+
+        .btn-outline { 
+            background-color: transparent; 
+            color: var(--text-dark); 
+            border: 1px solid #C5BCAD; 
+            padding: 12px 30px; 
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-outline:hover { 
+            background-color: var(--input-bg);
+            border-color: var(--btn-dark);
+        }
+
+        .text-danger { 
+            color: var(--danger); 
+            font-size: 12px; 
+            margin-left: 10px; 
+            display: block; 
+            margin-top: 5px; 
+        }
+
+        .validation-summary-errors { 
+            color: var(--danger); 
+            font-size: 14px; 
+            text-align: left; 
+            margin-bottom: 20px; 
+            padding: 15px; 
+            background: rgba(217, 56, 56, 0.1); 
+            border-radius: 15px;
+            border-left: 4px solid var(--danger);
+            list-style: none; 
+        }
+        
+        .validation-summary-errors ul { 
+            list-style: none; 
+            padding-left: 0; 
+        }
+
+        .validation-summary-errors li {
+            margin-bottom: 8px;
+        }
+
+        .validation-summary-errors li:last-child {
+            margin-bottom: 0;
+        }
+
+        .security-badge {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #C5BCAD;
+        }
+
+        .security-badge::before {
+            content: "🔒 ";
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+
+        <div class="greeting">Secure Access</div>
+        <div class="logo">
+            <span class="ocean">book</span><span class="library">nest</span>
+        </div>
+
+        <div class="page-title">Admin Panel</div>
+
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+
+            <div class="form-group">
+                <label for="UserNameOrEmail">Username or Email</label>
+                <input type="text" 
+                       asp-for="UserNameOrEmail" 
+                       id="UserNameOrEmail"
+                       required 
+                       autofocus
+                       autocomplete="username"
+                       placeholder="admin@booknest.com"
+                       aria-label="Username or Email">
+                <span asp-validation-for="UserNameOrEmail" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="Password">Password</label>
+                <input type="password" 
+                       asp-for="Password" 
+                       id="Password"
+                       required 
+                       autocomplete="current-password"
+                       placeholder="••••••••"
+                       aria-label="Password">
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="options-row">
+                <label class="checkbox-group">
+                    <input type="checkbox" asp-for="RememberMe" id="RememberMe">
+                    <span for="RememberMe">Remember me</span>
+                </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Login to Dashboard</button>
+        </form>
+
+        <div class="divider">Other Options</div>
+
+        <div class="link-group">
+            <a asp-controller="Account" asp-action="Login" asp-area="" class="btn btn-outline">User Login</a>
+            <a asp-controller="Home" asp-action="Index" asp-area="" class="btn btn-outline">Back to Website</a>
+        </div>
+
+        <div class="security-badge">Admin access is monitored and logged</div>
+
+    </div>
+
+</body>
+</html>

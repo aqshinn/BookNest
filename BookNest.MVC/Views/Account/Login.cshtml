@@ -1,6 +1,6 @@
 ﻿@model BookNest.MVC.ViewModels.LoginVM
 @{
-    Layout = null; // Öz xüsusi dizaynı var
+    Layout = null; // has special design, so we don't want to use the default layout
 }
 
 <!DOCTYPE html>
@@ -264,11 +264,13 @@
             </div>
 
             <button type="submit" class="btn btn-primary">Sign In</button>
+
+            <div class="divider">Don't have an account?</div>
+
+            <a asp-controller="Account" asp-action="Register" class="btn btn-outline">
+                Create an account
+            </a>
         </form>
-
-        <div class="divider">New to booknest?</div>
-
-        <a asp-controller="Account" asp-action="Register" class="btn btn-outline">Sign Up</a>
     </div>
 
 </body>

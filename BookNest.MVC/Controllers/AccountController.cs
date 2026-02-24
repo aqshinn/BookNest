@@ -80,22 +80,22 @@ namespace BookNest.MVC.Controllers
                 return View(model);
             }
 
-            // If coming from another page, redirect there, otherwise go to Home page
+            // Check if user is admin
+            var isAdmin = await _userManager.IsInRoleAsync(user, "Admin");
+
+            // If coming from another page, redirect there
             if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
             {
                 return Redirect(returnUrl);
             }
 
-            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+            // Redirect admin users to admin dashboard
+            if (isAdmin)
             {
-                if (returnUrl.Contains("UpdateShelf", StringComparison.OrdinalIgnoreCase))
-                {
-                    return RedirectToAction("Index", "Book");
-                }
-
-                return Redirect(returnUrl);
+                return RedirectToAction("Index", "Dashboard", new { area = "AdminPanel" });
             }
 
+            // Regular users go to home
             return RedirectToAction("Index", "Home");
         }
         
@@ -106,5 +106,46 @@ namespace BookNest.MVC.Controllers
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
+
+        // Admin Login
+        [HttpGet]
+        public IActionResult AdminLogin()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AdminLogin(LoginVM model, string? returnUrl = null)
+        {
+            if (!ModelState.IsValid) return View(model);
+
+            var user = await _userManager.FindByNameAsync(model.UserNameOrEmail) ??
+                       await _userManager.FindByEmailAsync(model.UserNameOrEmail);
+
+            if (user == null)
+            {
+                ModelState.AddModelError("", "Admin credentials incorrect!");
+                return View(model);
+            }
+
+            // Check if user is admin
+            var isAdmin = await _userManager.IsInRoleAsync(user, "Admin");
+            if (!isAdmin)
+            {
+                ModelState.AddModelError("", "You don't have admin privileges!");
+                return View(model);
+            }
+
+            var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, lockoutOnFailure: true);
+
+            if (!result.Succeeded)
+            {
+                ModelState.AddModelError("", "Admin credentials incorrect!");
+                return View(model);
+            }
+
+            return RedirectToAction("Index", "Dashboard", new { area = "AdminPanel" });
+        }
+
     }
 }

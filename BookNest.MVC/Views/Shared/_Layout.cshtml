@@ -42,16 +42,31 @@
             <div class="profile-section" style="display: flex; gap: 15px; align-items: center;">
                 @if (SignInManager.IsSignedIn(User))
                 {
-                    // Get the current logged-in user
                     var currentUser = await UserManager.GetUserAsync(User);
                     var fullName = currentUser?.FullName ?? "User";
-
-                    // Get the first letters of first and last name (e.g., "Ali Veliyev" -> "AV")
                     var initials = string.Join("", fullName.Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2).Select(n => n[0])).ToUpper();
+                    
+                    var isAdmin = await UserManager.IsInRoleAsync(currentUser, "Admin");
 
-                    <div style="width: 35px; height: 35px; border-radius: 50%; background: var(--primary-gold); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;" title="@fullName">
-                        @initials
-                    </div>
+                    @if (isAdmin)
+                    {
+                        <!-- Admin Badge & Panel Link -->
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="background: #D93838; color: white; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
+                                Admin
+                            </span>
+                            <a asp-area="AdminPanel" asp-controller="Dashboard" asp-action="Index" style="padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; text-decoration: none; background: var(--primary-gold); color: white; border: none;">
+                                Dashboard &rarr;
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <!-- Regular User Profile Icon -->
+                        <div style="width: 35px; height: 35px; border-radius: 50%; background: var(--primary-gold); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;" title="@fullName">
+                            @initials
+                        </div>
+                    }
 
                     <a asp-controller="Account" asp-action="Logout" style="padding: 6px 15px; border-radius: 20px; font-size: 13px; font-weight: 500; text-decoration: none; border: 1px solid var(--text-dark); color: var(--text-dark);">Logout</a>
                 }

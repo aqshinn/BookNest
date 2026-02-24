@@ -26,6 +26,30 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
+// Configure authentication options
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Account/Login";
+    options.AccessDeniedPath = "/Account/AccessDenied";
+    options.ExpireTimeSpan = TimeSpan.FromDays(20);
+
+    // Important: Add dynamic redirect based on the area being accessed
+    options.Events.OnRedirectToLogin = context =>
+    {
+        // If user tries to access /AdminPanel, redirect to admin login
+        if (context.Request.Path.StartsWithSegments("/AdminPanel"))
+        {
+            // Send them to admin login page with return URL
+            context.Response.Redirect("/Account/AdminLogin?ReturnUrl=" + context.Request.Path + context.Request.QueryString);
+        }
+        else
+        {
+            // For other areas, use standard login page
+            context.Response.Redirect(context.RedirectUri);
+        }
+        return Task.CompletedTask;
+    };
+});
 
 
 builder.Services.AddScoped<IGenreService, GenreService>();
@@ -43,6 +67,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();

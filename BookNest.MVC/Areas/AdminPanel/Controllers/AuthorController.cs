@@ -1,10 +1,12 @@
 ﻿using BookNest.Business.Interfaces;
 using BookNest.Core.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookNest.MVC.Areas.AdminPanel.Controllers
 {
     [Area("AdminPanel")]
+    [Authorize(Roles = "Admin")]
     public class AuthorController : Controller
     {
         private readonly IAuthorService _authorService;

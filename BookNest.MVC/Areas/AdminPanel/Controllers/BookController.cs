@@ -3,6 +3,7 @@ using BookNest.Business.Interfaces;
 using BookNest.Core.Entities;
 using BookNest.Data.Data;
 using BookNest.MVC.Areas.AdminPanel.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 namespace BookNest.MVC.Areas.AdminPanel.Controllers
 {
     [Area("AdminPanel")]
+    [Authorize(Roles = "Admin")]
     public class BookController : Controller
     {
         private const string _folderPath = "uploads/books";
