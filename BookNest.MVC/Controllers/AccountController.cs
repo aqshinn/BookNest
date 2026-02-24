@@ -1,5 +1,6 @@
 ﻿using BookNest.Core.Entities;
 using BookNest.MVC.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,11 +10,14 @@ namespace BookNest.MVC.Controllers
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
+        private readonly IWebHostEnvironment _env;
+        private const string _profileFolder = "uploads/profiles";
 
-        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
+        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IWebHostEnvironment env)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _env = env;
         }
 
         //Register
@@ -147,5 +151,218 @@ namespace BookNest.MVC.Controllers
             return RedirectToAction("Index", "Dashboard", new { area = "AdminPanel" });
         }
 
+        // VIEW PROFILE
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> Profile()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return NotFound();
+
+            var model = new ProfileVM
+            {
+                Id = user.Id,
+                FullName = user.FullName,
+                Email = user.Email,
+                UserName = user.UserName,
+                ProfileImageUrl = user.ProfileImageUrl,
+                Bio = user.Bio,
+                IsProfilePublic = user.IsProfilePublic,
+                CreatedDate = user.CreatedDate
+            };
+            return View(model);
+        }
+
+        // EDIT PROFILE
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> EditProfile()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return NotFound();
+
+            var model = new EditProfileVM
+            {
+                FullName = user.FullName,
+                Email = user.Email,
+                Bio = user.Bio,
+                IsProfilePublic = user.IsProfilePublic,
+                CurrentProfileImageUrl = user.ProfileImageUrl
+            };
+            return View(model);
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditProfile(EditProfileVM model)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return NotFound();
+
+            if (!ModelState.IsValid)
+            {
+                model.CurrentProfileImageUrl = user.ProfileImageUrl;
+                return View(model);
+            }
+
+            //update basic info
+            user.FullName = model.FullName;
+            user.Email = model.Email;
+            user.Bio = model.Bio;
+            user.IsProfilePublic = model.IsProfilePublic;
+
+            // Handle profile image upload
+            if (model.ProfileImage != null)
+            {
+                //validate file
+                if (!model.ProfileImage.ContentType.StartsWith("image/"))
+                {
+                    ModelState.AddModelError("ProfileImage", "File must be an image");
+                    model.CurrentProfileImageUrl = user.ProfileImageUrl;
+                    return View(model);
+                }
+
+                if (model.ProfileImage.Length > 5 * 1024 * 1024) // 5 MB limit
+                {
+                    ModelState.AddModelError("ProfileImage", "Image size cannot exceed 5MB");
+                    model.CurrentProfileImageUrl = user.ProfileImageUrl;
+                    return View(model);
+                }
+
+                //delete old image if exists
+                if (!string.IsNullOrEmpty(user.ProfileImageUrl))
+                {
+                    var oldImagePath = Path.Combine(_env.WebRootPath, "uploads/profiles", user.ProfileImageUrl);
+                    if (System.IO.File.Exists(oldImagePath))
+                    {
+                        System.IO.File.Delete(oldImagePath);
+                    }
+                }
+
+                // Save new image
+                var fileName = $"{user.Id}_{DateTime.Now:yyyyMMddHHmmss}{Path.GetExtension(model.ProfileImage.FileName)}";
+                var folderPath = Path.Combine(_env.WebRootPath, _profileFolder);
+
+                // Create folder if doesn't exist
+                if (!Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath);
+                }
+
+                var filePath = Path.Combine(folderPath, fileName);
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await model.ProfileImage.CopyToAsync(stream);
+                }
+
+                user.ProfileImageUrl = fileName;
+            }
+
+            // Update email if changed
+            if (user.Email != model.Email)
+            {
+                var emailExists = await _userManager.FindByEmailAsync(model.Email);
+                if (emailExists != null && emailExists.Id != user.Id)
+                {
+                    ModelState.AddModelError("Email", "Email already in use");
+                    model.CurrentProfileImageUrl = user.ProfileImageUrl;
+                    return View(model);
+                }
+
+                user.UserName = model.Email;
+                user.NormalizedUserName = model.Email.ToUpper();
+            }
+
+            var result = await _userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+                model.CurrentProfileImageUrl = user.ProfileImageUrl;
+                return View(model);
+            }
+
+            TempData["Success"] = "Profile updated successfully!";
+            return RedirectToAction(nameof(Profile));
+        }
+
+        // CHANGE PASSWORD
+        [Authorize]
+        [HttpGet]
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword(ChangePasswordVM model)
+        {
+            if (!ModelState.IsValid) return View(model);
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return NotFound();
+
+            if (model.NewPassword != model.ConfirmPassword)
+            {
+                ModelState.AddModelError("ConfirmPassword", "Passwords do not match");
+                return View(model);
+            }
+
+            var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+                return View(model);
+            }
+
+            TempData["Success"] = "Password changed successfully!";
+            return RedirectToAction(nameof(Profile));
+        }
+
+        // DELETE ACCOUNT - POST
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteAccount()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return NotFound();
+
+            // Delete profile image
+            if (!string.IsNullOrEmpty(user.ProfileImageUrl))
+            {
+                var imagePath = Path.Combine(_env.WebRootPath, "uploads/profiles", user.ProfileImageUrl);
+                if (System.IO.File.Exists(imagePath))
+                {
+                    System.IO.File.Delete(imagePath);
+                }
+            }
+
+            var result = await _userManager.DeleteAsync(user);
+
+            if (result.Succeeded)
+            {
+                await _signInManager.SignOutAsync();
+                TempData["Success"] = "Account deleted successfully";
+                return RedirectToAction("Index", "Home");
+            }
+
+            TempData["Error"] = "Failed to delete account";
+            return RedirectToAction(nameof(Profile));
+        }
+
+        // DELETE PROFILE PHOTO
+        
     }
 }

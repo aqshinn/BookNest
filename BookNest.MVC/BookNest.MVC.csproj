@@ -27,6 +27,7 @@
     <Folder Include="Models\" />
     <Folder Include="wwwroot\uploads\books\" />
     <Folder Include="wwwroot\uploads\authors\" />
+    <Folder Include="wwwroot\uploads\profiles\" />
     <Folder Include="wwwroot\uploads\sliders\" />
   </ItemGroup>
 
