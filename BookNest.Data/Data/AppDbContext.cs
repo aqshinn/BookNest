@@ -15,6 +15,7 @@ namespace BookNest.Data.Data
         public DbSet<BookGenre> BookGenres { get; set; }
         public DbSet<BookAuthor> BookAuthors { get; set; }
         public DbSet<ReadingList> ReadingLists { get; set; }
+        public DbSet<Review> Reviews { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -56,6 +57,21 @@ namespace BookNest.Data.Data
                 .WithMany()
                 .HasForeignKey(rl => rl.AppUserId)
                 .OnDelete(DeleteBehavior.Cascade); // If a user is deleted, their shelf will also be deleted.
+
+            
+            modelBuilder.Entity<Review>()
+                .HasOne(r => r.Book)
+                .WithMany(b => b.Reviews) // We link to the Reviews collection inside the book
+                .HasForeignKey(r => r.BookId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            
+            modelBuilder.Entity<Review>()
+                .HasOne(r => r.AppUser)
+                .WithMany()
+                .HasForeignKey(r => r.AppUserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
 
         }
 

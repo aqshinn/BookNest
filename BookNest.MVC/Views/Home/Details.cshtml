@@ -111,27 +111,41 @@
 </div>
 
 <div id="tab-reviews" class="details-content hidden">
-    <div class="section-title"><h2>İstifadəçi Rəyləri</h2></div>
+    <div class="reviews-section" style="margin-top: 50px; border-top: 1px solid #E0DCD0; padding-top: 30px;">
+        <h3 style="font-family: var(--font-serif); color: var(--text-dark); margin-bottom: 20px;">User Reviews</h3>
 
-    <div class="reviews-controls">
-        <div class="review-pill pill-light">✎ Rəy Yaz</div>
-        <div class="review-pill pill-dark">Populyar Rəylər</div>
-    </div>
-
-    <div class="review-card">
-        <div class="reviewer-info">
-            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User">
-            <div class="reviewer-name">Andrea James</div>
-            <div class="badge">✎ Top Reviewer</div>
+        <div id="reviewsList" style="margin-bottom: 40px; display: flex; flex-direction: column; gap: 15px;">
+            <p style="color: #A39683;">Loading reviews...</p>
         </div>
-        <div class="review-text">
-            This book is simply amazing! From the first page, it drew me in and I couldn't put it down until the end.
-            The flow of events and character development are very well done.
-            <div class="review-actions">
-                <span>♡ Like (23)</span>
-                <span>💬 Comment (2)</span>
-                <div class="review-stars">★★★★★</div>
-            </div>
+
+        <div class="add-review-box" style="background: var(--bg-color); padding: 25px; border-radius: 12px; border: 1px solid #E0DCD0;">
+            <h4 style="margin-bottom: 15px; color: var(--text-dark);">Share Your Review</h4>
+            
+            <form id="reviewForm">
+                <input type="hidden" id="bookId" value="@Model.Id" />
+
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 500; font-size: 14px;">Rating (1-5)</label>
+                    <select id="rating" style="padding: 10px; border-radius: 8px; border: 1px solid #C5BCAD; width: 100%; max-width: 200px; outline: none;">
+                        <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
+                        <option value="4">⭐⭐⭐⭐ (4/5)</option>
+                        <option value="3">⭐⭐⭐ (3/5)</option>
+                        <option value="2">⭐⭐ (2/5)</option>
+                        <option value="1">⭐ (1/5)</option>
+                    </select>
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 500; font-size: 14px;">Your Review</label>
+                    <textarea id="comment" rows="4" required placeholder="Share your thoughts about this book..." style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #C5BCAD; resize: vertical; font-family: var(--font-sans); outline: none;"></textarea>
+                </div>
+
+                <button type="submit" id="submitReviewBtn" style="background: var(--text-dark); color: white; border: none; padding: 12px 25px; border-radius: 20px; font-weight: 600; cursor: pointer; transition: 0.3s;">
+                    Submit Review
+                </button>
+                
+                <p id="reviewMessage" style="margin-top: 10px; font-size: 14px; font-weight: 500;"></p>
+            </form>
         </div>
     </div>
 </div>
@@ -173,5 +187,121 @@
                 btn.innerHTML = "Show more ▾";
             }
         }
+
+        //JavaScript code for handling reviews (fetching and submitting)
+            document.addEventListener("DOMContentLoaded", function () {
+            const bookId = document.getElementById("bookId").value;
+            const reviewsList = document.getElementById("reviewsList");
+            const reviewForm = document.getElementById("reviewForm");
+            const reviewMessage = document.getElementById("reviewMessage");
+            const submitBtn = document.getElementById("submitReviewBtn");
+
+            // 1. Səhifə açılanda rəyləri API-dən gətirən funksiya
+            function loadReviews() {
+                fetch(`/api/Reviews/${bookId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        reviewsList.innerHTML = ""; // Yüklənir yazısını silirik
+
+                        if (data.length === 0) {
+                            reviewsList.innerHTML = "<p style='color: #A39683;'>Bu kitaba hələ rəy yazılmayıb. İlk yazan siz olun!</p>";
+                            return;
+                        }
+
+                        // Hər bir rəy üçün HTML yaradırıq
+                        data.forEach(review => {
+                            // Tarixi səliqəli formata salırıq (Məsələn: 26 Fev 2026)
+                            const dateObj = new Date(review.date);
+                            const formattedDate = dateObj.toLocaleDateString('az-AZ', { day: 'numeric', month: 'short', year: 'numeric' });
+
+                            // Ulduzları çəkmək üçün (Məsələn 4 ulduz = ⭐⭐⭐⭐)
+                            const stars = "⭐".repeat(review.rating);
+
+                            // Profil şəkli yoxdursa standart şəkil qoyuruq
+                            const userImg = review.userImage ? `/uploads/profiles/${review.userImage}` : "https://randomuser.me/api/portraits/lego/1.jpg";
+
+                            const reviewHtml = `
+                                <div style="background: white; padding: 15px; border-radius: 10px; border: 1px solid #F0EBE1; display: flex; gap: 15px;">
+                                    <img src="${userImg}" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover;" alt="User">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                            <strong style="color: var(--text-dark);">${review.userName}</strong>
+                                            <span style="color: #A39683; font-size: 12px;">${formattedDate}</span>
+                                        </div>
+                                        <div style="margin-bottom: 8px; font-size: 14px;">${stars}</div>
+                                        <p style="margin: 0; font-size: 14px; color: #555; line-height: 1.5;">${review.comment}</p>
+                                    </div>
+                                </div>
+                            `;
+                            reviewsList.innerHTML += reviewHtml;
+                        });
+                    })
+                    .catch(err => console.error("Rəylər yüklənərkən xəta baş verdi:", err));
+            }
+
+            // 2. Form göndəriləndə API-yə (POST) sorğu atan funksiya
+            reviewForm.addEventListener("submit", function (e) {
+                e.preventDefault(); // Səhifənin yenilənməsinin qarşısını alırıq!
+
+                // Düyməni deaktiv edirik ki, istifadəçi 2 dəfə basa bilməsin
+                submitBtn.disabled = true;
+                submitBtn.innerText = "Göndərilir...";
+                reviewMessage.innerText = "";
+
+                const payload = {
+                    bookId: parseInt(bookId),
+                    rating: parseInt(document.getElementById("rating").value),
+                    comment: document.getElementById("comment").value
+                };
+
+                fetch("/api/Reviews", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json" // Backend-ə JSON göndərdiyimizi deyirik
+                    },
+                    body: JSON.stringify(payload)
+                })
+                .then(async response => {
+                // 1. Əgər 401 (Giriş edilməyib) xətasıdırsa, JSON oxumağa çalışma!
+                if (response.status === 401) {
+                    reviewMessage.style.color = "red";
+                    reviewMessage.innerText = "Rəy yazmaq üçün sistemə daxil olmalısınız!";
+                    return; // Buradan çıxırıq
+                }
+
+                // Digər hallarda (Məsələn 200 OK və ya 400 Bad Request) JSON-u oxu
+                const data = await response.json();
+
+                if (response.ok) {
+                    reviewMessage.style.color = "green";
+                    reviewMessage.innerText = data.message;
+                    reviewForm.reset(); // Formu təmizlə
+                    loadReviews(); // Siyahını yenilə!
+                } else {
+                    reviewMessage.style.color = "red";
+                    reviewMessage.innerText = data.message || "Xəta baş verdi. Zəhmət olmasa məlumatları düzgün daxil edin.";
+                }
+            })
+                .catch(err => {
+                    reviewMessage.style.color = "red";
+                    reviewMessage.innerText = "Serverlə əlaqə qurularkən xəta baş verdi.";
+                    console.error(err);
+                })
+                .finally(() => {
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = "Rəy Göndər";
+                });
+            });
+
+            // 3. Səhifə açılanda rəyləri ilk dəfə yükləyirik
+            loadReviews();
+        });
+
+
+
+
+
+
+
     </script>
 }

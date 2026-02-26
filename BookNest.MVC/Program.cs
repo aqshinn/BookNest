@@ -33,18 +33,21 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.AccessDeniedPath = "/Account/AccessDenied";
     options.ExpireTimeSpan = TimeSpan.FromDays(20);
 
-    // Important: Add dynamic redirect based on the area being accessed
     options.Events.OnRedirectToLogin = context =>
     {
-        // If user tries to access /AdminPanel, redirect to admin login
-        if (context.Request.Path.StartsWithSegments("/AdminPanel"))
+        // 1. YENİ ƏLAVƏ: Əgər API-yə sorğu gəlibsə, HTML səhifəyə atma, xəta (401) qaytar!
+        if (context.Request.Path.StartsWithSegments("/api"))
         {
-            // Send them to admin login page with return URL
+            context.Response.StatusCode = 401;
+        }
+        // 2. Əgər Admin panelə girmək istəyirsə
+        else if (context.Request.Path.StartsWithSegments("/AdminPanel"))
+        {
             context.Response.Redirect("/Account/AdminLogin?ReturnUrl=" + context.Request.Path + context.Request.QueryString);
         }
+        // 3. Digər normal istifadəçilər
         else
         {
-            // For other areas, use standard login page
             context.Response.Redirect(context.RedirectUri);
         }
         return Task.CompletedTask;
