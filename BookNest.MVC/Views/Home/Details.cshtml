@@ -24,7 +24,6 @@
         <form asp-controller="Shelf" asp-action="UpdateShelf" method="post" style="display: inline;">
             <input type="hidden" name="bookId" value="@Model.Id" />
             <button type="submit" name="newStatusId" value="1" class="buy-btn outline">Add to List</button>
-            <button type="submit" name="newStatusId" value="2" class="buy-btn">Start Reading</button>
         </form>
     </div>
     
@@ -63,6 +62,31 @@
                 </div>
                 72k people wanted to read
             </div>
+        </div>
+
+        <div class="book-rating" style="display: flex; align-items: center; gap: 8px; margin: 10px 0 20px 0;">
+            <div style="color: #FF9900; font-size: 18px; letter-spacing: 2px;">
+                @* Display stars based on average rating *@
+                @for (int i = 1; i <= 5; i++)
+                {
+                    if (i <= Math.Round(Model.AverageRating))
+                    {
+                        <span>★</span>
+                    }
+                    else
+                    {
+                        <span style="color: #E0DCD0;">★</span>
+                    }
+                }
+            </div>
+
+            <strong style="font-size: 18px; color: var(--text-dark);">
+                @Model.AverageRating.ToString("0.0")
+            </strong>
+
+            <span style="color: #A39683; font-size: 14px; margin-left: 5px;">
+                • @Model.ReviewCount review@(Model.ReviewCount != 1 ? "s" : "")
+            </span>
         </div>
     </div>
 </div>

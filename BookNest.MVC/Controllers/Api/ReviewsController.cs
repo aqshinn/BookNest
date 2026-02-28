@@ -112,11 +112,18 @@ namespace BookNest.MVC.Controllers.Api
             // DENORMALIZATION:
             if (existingReview.Rating != model.Rating)
             {
-                // The formula: (Total Score - Old Rating + New Rating) / Review Count
-                double currentTotalScore = book.AverageRating * book.ReviewCount;
-                double newTotalScore = currentTotalScore - existingReview.Rating + model.Rating;
+                if (book.AverageRating == 0)
+                {
+                    book.AverageRating = model.Rating;
+                    book.ReviewCount = 1;
+                }
+                else // The formula: (Total Score - Old Rating + New Rating) / Review Count
+                {
+                    double currentTotalScore = book.AverageRating * book.ReviewCount;
+                    double newTotalScore = currentTotalScore - existingReview.Rating + model.Rating;
 
-                book.AverageRating = newTotalScore / book.ReviewCount;
+                    book.AverageRating = newTotalScore / book.ReviewCount;
+                }
             }
 
             // Update the review

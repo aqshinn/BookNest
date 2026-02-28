@@ -18,8 +18,22 @@
 
             <div class="book-info">
                 <div class="book-title">@item.Title</div>
-                <div class="book-author">@(item.BookAuthors.FirstOrDefault()?.Author.FullName ?? "Naməlum")</div>
-                <div class="stars">★★★★<span class="gray">★</span></div>
+                <div class="book-author">@(item.BookAuthors.FirstOrDefault()?.Author.FullName ?? "Unknown")</div>
+
+                <div class="card-rating" style="display: flex; align-items: center; gap: 4px; font-size: 13px; margin-top: 5px;">
+                    <span style="color: #FF9900; font-size: 15px;">★</span>
+                    <strong style="color: var(--text-dark);">@item.AverageRating.ToString("0.0")</strong>
+                    <span style="color: #A39683;">
+                        @if(item.ReviewCount > 0)
+                        {
+                            <text>• @item.ReviewCount review@(item.ReviewCount != 1 ? "s" : "")</text>
+                        }
+                        else
+                        {
+                            <text>• New</text>
+                        }
+                    </span>
+                </div>
             </div>
         </a>
     }
