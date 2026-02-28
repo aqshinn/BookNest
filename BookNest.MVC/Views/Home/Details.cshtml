@@ -83,9 +83,9 @@
 </div>
 
 <div class="container"> <div id="tab-details" class="details-content">
-    <div class="section-title"><h2>Kitab Haqqında Əlavə Məlumat</h2></div>
+    <div class="section-title"><h2>Additional Book Information</h2></div>
 
-    <h3>Müəllif Haqqında</h3>
+    <h3>About the Author</h3>
     <div class="author-section">
         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Tolkien_1916.jpg/220px-Tolkien_1916.jpg" alt="Author">
         <div class="author-info">
@@ -118,35 +118,36 @@
             <p style="color: #A39683;">Loading reviews...</p>
         </div>
 
-        <div class="add-review-box" style="background: var(--bg-color); padding: 25px; border-radius: 12px; border: 1px solid #E0DCD0;">
-            <h4 style="margin-bottom: 15px; color: var(--text-dark);">Share Your Review</h4>
-            
-            <form id="reviewForm">
-                <input type="hidden" id="bookId" value="@Model.Id" />
+            <div class="add-review-box" style="background: var(--bg-color); padding: 25px; border-radius: 12px; border: 1px solid #E0DCD0;">
+                <h4 id="formTitle" style="margin-bottom: 15px; color: var(--text-dark);">Share your opinion.</h4>
 
-                <div style="margin-bottom: 15px;">
-                    <label style="display: block; margin-bottom: 5px; font-weight: 500; font-size: 14px;">Rating (1-5)</label>
-                    <select id="rating" style="padding: 10px; border-radius: 8px; border: 1px solid #C5BCAD; width: 100%; max-width: 200px; outline: none;">
-                        <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
-                        <option value="4">⭐⭐⭐⭐ (4/5)</option>
-                        <option value="3">⭐⭐⭐ (3/5)</option>
-                        <option value="2">⭐⭐ (2/5)</option>
-                        <option value="1">⭐ (1/5)</option>
-                    </select>
-                </div>
+                <form id="reviewForm">
+                    <input type="hidden" id="bookId" value="@Model.Id" />
+                    <input type="hidden" id="currentUserId" value="@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value" />
 
-                <div style="margin-bottom: 15px;">
-                    <label style="display: block; margin-bottom: 5px; font-weight: 500; font-size: 14px;">Your Review</label>
-                    <textarea id="comment" rows="4" required placeholder="Share your thoughts about this book..." style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #C5BCAD; resize: vertical; font-family: var(--font-sans); outline: none;"></textarea>
-                </div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 500; font-size: 14px;">Rating (1-5)</label>
+                        <select id="rating" style="padding: 10px; border-radius: 8px; border: 1px solid #C5BCAD; width: 100%; max-width: 200px; outline: none;">
+                            <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
+                            <option value="4">⭐⭐⭐⭐ (4/5)</option>
+                            <option value="3">⭐⭐⭐ (3/5)</option>
+                            <option value="2">⭐⭐ (2/5)</option>
+                            <option value="1">⭐ (1/5)</option>
+                        </select>
+                    </div>
 
-                <button type="submit" id="submitReviewBtn" style="background: var(--text-dark); color: white; border: none; padding: 12px 25px; border-radius: 20px; font-weight: 600; cursor: pointer; transition: 0.3s;">
-                    Submit Review
-                </button>
-                
-                <p id="reviewMessage" style="margin-top: 10px; font-size: 14px; font-weight: 500;"></p>
-            </form>
-        </div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 500; font-size: 14px;">Your Review</label>
+                        <textarea id="comment" rows="4" required placeholder="Share your thoughts about the book..." style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #C5BCAD; resize: vertical; outline: none;"></textarea>
+                    </div>
+
+                    <button type="submit" id="submitReviewBtn" style="background: var(--text-dark); color: white; border: none; padding: 12px 25px; border-radius: 20px; font-weight: 600; cursor: pointer; transition: 0.3s;">
+                        Submit Review
+                    </button>
+
+                    <p id="reviewMessage" style="margin-top: 10px; font-size: 14px; font-weight: 500;"></p>
+                </form>
+            </div>
     </div>
 </div>
 
@@ -188,38 +189,46 @@
             }
         }
 
-        //JavaScript code for handling reviews (fetching and submitting)
-            document.addEventListener("DOMContentLoaded", function () {
+        // JavaScript code for handling reviews (fetching and submitting)
+        document.addEventListener("DOMContentLoaded", function () {
             const bookId = document.getElementById("bookId").value;
+            const currentUserId = document.getElementById("currentUserId").value; // Logged-in user
             const reviewsList = document.getElementById("reviewsList");
             const reviewForm = document.getElementById("reviewForm");
             const reviewMessage = document.getElementById("reviewMessage");
             const submitBtn = document.getElementById("submitReviewBtn");
+            const formTitle = document.getElementById("formTitle");
 
-            // 1. Səhifə açılanda rəyləri API-dən gətirən funksiya
+            let isEditing = false; // First, assume this is a new review
+
             function loadReviews() {
                 fetch(`/api/Reviews/${bookId}`)
                     .then(response => response.json())
                     .then(data => {
-                        reviewsList.innerHTML = ""; // Yüklənir yazısını silirik
+                        reviewsList.innerHTML = "";
+                        isEditing = false; // Reset on each load
 
                         if (data.length === 0) {
-                            reviewsList.innerHTML = "<p style='color: #A39683;'>Bu kitaba hələ rəy yazılmayıb. İlk yazan siz olun!</p>";
+                            reviewsList.innerHTML = "<p style='color: #A39683;'>No reviews have been written for this book yet. Be the first to write one!</p>";
                             return;
                         }
 
-                        // Hər bir rəy üçün HTML yaradırıq
                         data.forEach(review => {
-                            // Tarixi səliqəli formata salırıq (Məsələn: 26 Fev 2026)
+                            // KEY POINT 1: If this review is mine, switch form to Edit mode!
+                            if (review.userId === currentUserId) {
+                                isEditing = true;
+                                document.getElementById("rating").value = review.rating;
+                                document.getElementById("comment").value = review.comment;
+                                submitBtn.innerText = "Update Review";
+                                formTitle.innerText = "Edit Your Review";
+                            }
+
                             const dateObj = new Date(review.date);
-                            const formattedDate = dateObj.toLocaleDateString('az-AZ', { day: 'numeric', month: 'short', year: 'numeric' });
-
-                            // Ulduzları çəkmək üçün (Məsələn 4 ulduz = ⭐⭐⭐⭐)
+                            const formattedDate = dateObj.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
                             const stars = "⭐".repeat(review.rating);
-
-                            // Profil şəkli yoxdursa standart şəkil qoyuruq
                             const userImg = review.userImage ? `/uploads/profiles/${review.userImage}` : "https://randomuser.me/api/portraits/lego/1.jpg";
 
+                            // Add review to the list
                             const reviewHtml = `
                                 <div style="background: white; padding: 15px; border-radius: 10px; border: 1px solid #F0EBE1; display: flex; gap: 15px;">
                                     <img src="${userImg}" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover;" alt="User">
@@ -236,16 +245,13 @@
                             reviewsList.innerHTML += reviewHtml;
                         });
                     })
-                    .catch(err => console.error("Rəylər yüklənərkən xəta baş verdi:", err));
+                    .catch(err => console.error("Error loading reviews:", err));
             }
 
-            // 2. Form göndəriləndə API-yə (POST) sorğu atan funksiya
             reviewForm.addEventListener("submit", function (e) {
-                e.preventDefault(); // Səhifənin yenilənməsinin qarşısını alırıq!
-
-                // Düyməni deaktiv edirik ki, istifadəçi 2 dəfə basa bilməsin
+                e.preventDefault();
                 submitBtn.disabled = true;
-                submitBtn.innerText = "Göndərilir...";
+                submitBtn.innerText = "Please wait...";
                 reviewMessage.innerText = "";
 
                 const payload = {
@@ -254,46 +260,43 @@
                     comment: document.getElementById("comment").value
                 };
 
+                // If I have a review, use PUT, if not, use POST!
+                const methodType = isEditing ? "PUT" : "POST";
+
                 fetch("/api/Reviews", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json" // Backend-ə JSON göndərdiyimizi deyirik
-                    },
+                    method: methodType,
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payload)
                 })
                 .then(async response => {
-                // 1. Əgər 401 (Giriş edilməyib) xətasıdırsa, JSON oxumağa çalışma!
-                if (response.status === 401) {
-                    reviewMessage.style.color = "red";
-                    reviewMessage.innerText = "Rəy yazmaq üçün sistemə daxil olmalısınız!";
-                    return; // Buradan çıxırıq
-                }
+                    if (response.status === 401) {
+                        reviewMessage.style.color = "red";
+                        reviewMessage.innerText = "You must be logged in to write a review!";
+                        return;
+                    }
 
-                // Digər hallarda (Məsələn 200 OK və ya 400 Bad Request) JSON-u oxu
-                const data = await response.json();
+                    const data = await response.json();
 
-                if (response.ok) {
-                    reviewMessage.style.color = "green";
-                    reviewMessage.innerText = data.message;
-                    reviewForm.reset(); // Formu təmizlə
-                    loadReviews(); // Siyahını yenilə!
-                } else {
-                    reviewMessage.style.color = "red";
-                    reviewMessage.innerText = data.message || "Xəta baş verdi. Zəhmət olmasa məlumatları düzgün daxil edin.";
-                }
-            })
+                    if (response.ok) {
+                        reviewMessage.style.color = "green";
+                        reviewMessage.innerText = data.message;
+                        // Don't clear form (when editing, text should remain), just refresh the list
+                        loadReviews();
+                    } else {
+                        reviewMessage.style.color = "red";
+                        reviewMessage.innerText = data.message || "An error occurred.";
+                    }
+                })
                 .catch(err => {
                     reviewMessage.style.color = "red";
-                    reviewMessage.innerText = "Serverlə əlaqə qurularkən xəta baş verdi.";
-                    console.error(err);
+                    reviewMessage.innerText = "Server connection error.";
                 })
                 .finally(() => {
                     submitBtn.disabled = false;
-                    submitBtn.innerText = "Rəy Göndər";
+                    submitBtn.innerText = isEditing ? "Update Review" : "Submit Review";
                 });
             });
 
-            // 3. Səhifə açılanda rəyləri ilk dəfə yükləyirik
             loadReviews();
         });
 

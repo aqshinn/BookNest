@@ -18,5 +18,8 @@ namespace BookNest.Core.Entities
         public ICollection<BookAuthor>? BookAuthors { get; set; }
 
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
+
+        public double AverageRating { get; set; } = 0;
+        public int ReviewCount { get; set; } = 0;
     }
 }

@@ -72,7 +72,9 @@ namespace BookNest.Data.Data
                 .HasForeignKey(r => r.AppUserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-
+            modelBuilder.Entity<Review>()
+                .HasIndex(r => new { r.AppUserId, r.BookId })
+                .IsUnique(); // Ensure a user can only review a book once
         }
 
     }
