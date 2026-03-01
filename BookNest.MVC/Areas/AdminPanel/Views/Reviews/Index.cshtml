@@ -1,0 +1,56 @@
+﻿@model IEnumerable<BookNest.Core.Entities.Review>
+
+<div class="container-fluid mt-4">
+    <h2 class="mb-4">User Reviews Management</h2>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <table class="table table-hover table-bordered align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Date</th>
+                        <th>User</th>
+                        <th>Book</th>
+                        <th>Rating</th>
+                        <th>Review Text</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.CreatedAt.ToString("dd MMM yyyy, HH:mm")</td>
+                            <td><strong>@item.AppUser.FullName</strong></td>
+                            <td><span class="badge bg-info text-dark">@item.Book.Title</span></td>
+                            <td class="text-warning fw-bold">@item.Rating ★</td>
+                            <td style="max-width: 300px; white-space: normal;">@item.Comment</td>
+                            <td class="text-center">
+                                <form asp-action="Delete" asp-route-id="@item.Id" method="post" onsubmit="return confirm('Are you sure you want to delete this review? The book rating will be automatically recalculated.');">
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">No reviews found in the system.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
