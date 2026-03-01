@@ -15,11 +15,13 @@ namespace BookNest.MVC.ViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            
+            // Get featured books with all related data
             var books = await _context.Books
                 .Where(b => !b.IsDeleted)
+                .Include(b => b.BookGenres).ThenInclude(bg => bg.Genre)
                 .Include(b => b.BookAuthors).ThenInclude(ba => ba.Author)
-                .OrderBy(r => Guid.NewGuid())
+                .Include(b => b.Reviews) // Include reviews to calculate ratings
+                .OrderBy(r => Guid.NewGuid()) // Random order for featured
                 .Take(4)
                 .ToListAsync();
 

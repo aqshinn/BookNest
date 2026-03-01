@@ -178,7 +178,13 @@
 </div> <div class="similar-books">
     <div class="container">
         <h2>Similar Books</h2>
-        @await Component.InvokeAsync("FeaturedBooks")
+        @{
+            var genreId = Model.BookGenres?.FirstOrDefault()?.GenreId ?? 0;
+        }
+        @if (genreId > 0)
+        {
+            @await Component.InvokeAsync("RelatedBooks", new { genreId = genreId, currentBookId = Model.Id })
+        }
     </div>
 </div>
 
@@ -332,3 +338,4 @@
 
     </script>
 }
+
