@@ -11,7 +11,6 @@
         --row-light: #F6F4EB;
         --tab-active-bg: #4A3C2A;
         --header-text-color: #9D7B48;
-        --red-heart: #D93838;
     }
 
     /* --- Page Title & Tabs --- */
@@ -116,21 +115,7 @@
             object-fit: cover;
         }
 
-    .heart-icon {
-        position: absolute;
-        bottom: -8px;
-        right: -8px;
-        width: 24px;
-        height: 24px;
-        background: var(--text-dark);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--red-heart);
-        font-size: 12px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    }
+    /* Heart badge removed */
 
     .col-title .b-title {
         font-size: 13px;
@@ -222,10 +207,24 @@
     <h1>Your Book Shelf</h1>
     <p>Track, rate, and review your favorite books</p>
 
-    <div class="tab-container">
-        <a asp-controller="Shelf" asp-action="Index" asp-route-statusId="1" class="tab-btn @(Model.CurrentStatus == 1 ? "active" : "")">To read</a>
-        <a asp-controller="Shelf" asp-action="Index" asp-route-statusId="2" class="tab-btn @(Model.CurrentStatus == 2 ? "active" : "")">Currently Reading</a>
-        <a asp-controller="Shelf" asp-action="Index" asp-route-statusId="3" class="tab-btn @(Model.CurrentStatus == 3 ? "active" : "")">Read</a>
+    <div style="display: flex; justify-content: center; gap: 15px; margin-bottom: 40px;">
+        <a href="@Url.Action("Index", "Shelf", new { statusId = 1 })"
+           style="padding: 10px 25px; border-radius: 30px; text-decoration: none; font-weight: 500; transition: 0.3s;
+              @(Model.CurrentStatus == 1 ? "background-color: #4A3B32; color: white;" : "background-color: #EFEBE1; color: #A39683;")">
+            To read
+        </a>
+
+        <a href="@Url.Action("Index", "Shelf", new { statusId = 2 })"
+           style="padding: 10px 25px; border-radius: 30px; text-decoration: none; font-weight: 500; transition: 0.3s;
+              @(Model.CurrentStatus == 2 ? "background-color: #4A3B32; color: white;" : "background-color: #EFEBE1; color: #A39683;")">
+            Currently Reading
+        </a>
+
+        <a href="@Url.Action("Index", "Shelf", new { statusId = 3 })"
+           style="padding: 10px 25px; border-radius: 30px; text-decoration: none; font-weight: 500; transition: 0.3s;
+              @(Model.CurrentStatus == 3 ? "background-color: #4A3B32; color: white;" : "background-color: #EFEBE1; color: #A39683;")">
+            Read
+        </a>
     </div>
 </div>
 
@@ -236,7 +235,7 @@
         <div class="header-col" style="text-align: center;">Rating</div>
         <div class="header-col">Added Date</div>
         <div class="header-col">Read Date</div>
-        <div></div>
+        <div></div> <div></div>
     </div>
 </div>
 
@@ -252,7 +251,7 @@ else
     int counter = 0;
     foreach (var item in Model.ReadingLists)
     {
-        // Tək və cüt sətirlər üçün fərqli arxa plan rəngi (sənin dizayndakı kimi)
+        // Tək və cüt sətirlər üçün fərqli arxa plan rəngi
         string rowClass = (counter % 2 == 0) ? "bg-dark" : "bg-light";
         counter++;
 
@@ -263,7 +262,6 @@ else
                     <a asp-controller="Home" asp-action="Details" asp-route-id="@item.BookId">
                         <img src="~/uploads/books/@item.Book.ImageUrl" alt="Cover">
                     </a>
-                    <div class="heart-icon">♥</div>
                 </div>
 
                 <div class="col-title">
@@ -271,27 +269,42 @@ else
                     <div class="b-author">@(item.Book.BookAuthors.FirstOrDefault()?.Author.FullName ?? "Unknown Author")</div>
                 </div>
 
-                <div class="col-rating">
-                    <div class="score">0/5</div>
-                    <div class="stars">☆☆☆☆☆</div>
+               <div class="col-rating">
+                    <div class="score">@item.Book.AverageRating.ToString("0.0")/5</div>
+                    <div class="stars" style="color: #FF9900;">★</div>
                 </div>
 
                 <div class="col-date">@item.AddedDate.ToString("MMMM dd, yyyy")</div>
 
                 <div class="col-date">
-                    @(item.FinishedDate.HasValue? item.FinishedDate.Value.ToString("MMMM dd, yyyy") : "-")
+                    @(item.FinishedDate.HasValue ? item.FinishedDate.Value.ToString("MMMM dd, yyyy") : "-")
                 </div>
 
-                <div class="col-action">
-                    <span class="icon">💬</span>
-                    <span class="action-text">Post a review</span>
+                <div class="col-action" style="display: flex; flex-direction: column; gap: 12px; justify-content: center; align-items: flex-start;">
+                    
+                    <form asp-action="UpdateShelf" asp-controller="Shelf" method="post" style="margin: 0; width: 100%;">
+                        <input type="hidden" name="bookId" value="@item.BookId" />
+                        <select name="newStatusId" onchange="this.form.submit()"
+                                style="width: 100%; padding: 8px 10px; border-radius: 6px; border: 1px solid #C5BCAD; background-color: rgba(255,255,255,0.7); color: var(--text-dark); font-size: 13px; outline: none; cursor: pointer;">
+                            <option value="1" selected="@(item.StatusId == 1 ? "selected" : null)">To Read</option>
+                            <option value="2" selected="@(item.StatusId == 2 ? "selected" : null)">Currently Reading</option>
+                            <option value="3" selected="@(item.StatusId == 3 ? "selected" : null)">Read</option>
+                        </select>
+                    </form>
+
+                    <a href="/Home/Details/@item.BookId" style="text-decoration: none; color: #A39683; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 5px; transition: 0.3s;" onmouseover="this.style.color='var(--text-dark)'" onmouseout="this.style.color='#A39683'">
+                        <span style="font-size: 16px;">💬</span> Review
+                    </a>
+                    
                 </div>
 
-                <form method="post" asp-action="RemoveFromShelf" asp-route-readingListId="@item.Id" asp-route-statusId="@Model.CurrentStatus" style="display: inline;">
-                    <button type="submit" class="delete-btn" title="Remove from shelf" onclick="return confirm('Are you sure you want to remove this book from your shelf?');">
-                        ✕
-                    </button>
-                </form>
+                <div style="display: flex; justify-content: center; align-items: center;">
+                    <form method="post" asp-action="RemoveFromShelf" asp-route-readingListId="@item.Id" asp-route-statusId="@Model.CurrentStatus" style="margin: 0;">
+                        <button type="submit" style="background: none; border: none; color: #dc3545; font-size: 22px; font-weight: bold; cursor: pointer; transition: 0.3s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'" title="Remove from shelf" onclick="return confirm('Are you sure you want to remove this book from your shelf?');">
+                            ✕
+                        </button>
+                    </form>
+                </div>
 
             </div>
         </div>

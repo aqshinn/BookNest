@@ -8,8 +8,7 @@
     --primary-gold: #F4C150;
     --footer-bg: #443729;
     --white: #FFFFFF;
-    --red-heart: #D93838;
-    --black-heart: #2B2118;
+    /* heart color variables removed (heart badges removed) */
     --shadow: 0 4px 15px rgba(0,0,0,0.05);
     --font-serif: 'Playfair Display', serif;
     --font-sans: 'Inter', sans-serif;
@@ -199,26 +198,7 @@ ul {
     transform: translateY(-5px);
 }
 
-.heart-icon {
-    position: absolute;
-    bottom: -12px;
-    right: 15px;
-    width: 30px;
-    height: 30px;
-    background: var(--text-dark);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    font-size: 14px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    z-index: 2;
-}
-
-    .heart-icon.red {
-        color: var(--red-heart);
-    }
+/* Heart badge styles removed */
 
 .book-info {
     text-align: center;
