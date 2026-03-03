@@ -87,6 +87,10 @@ namespace BookNest.MVC.Controllers
             }
 
             await _context.SaveChangesAsync();
+
+            // Message for Toaster:
+            TempData["Success"] = "Book status successfully updated in your shelf!";
+
             return RedirectToAction("Index", new { statusId = newStatusId });
         }
 
@@ -110,6 +114,7 @@ namespace BookNest.MVC.Controllers
             _context.ReadingLists.Remove(readingListItem);
             await _context.SaveChangesAsync();
 
+            TempData["Success"] = "Book has been removed from your shelf!";
             return RedirectToAction("Index", new { statusId = statusId });
         }
     }

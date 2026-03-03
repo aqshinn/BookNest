@@ -36,6 +36,7 @@ namespace BookNest.MVC.Areas.AdminPanel.Controllers
             if (!ModelState.IsValid) return View(author);
 
             await _authorService.CreateAsync(author);
+            TempData["Success"] = "Author has been created successfully!";
             return RedirectToAction(nameof(Index));
         }
 
@@ -62,12 +63,14 @@ namespace BookNest.MVC.Areas.AdminPanel.Controllers
             existingAuthor.Biography = author.Biography;
 
             await _authorService.UpdateAsync(existingAuthor);
+            TempData["Success"] = "Author has been updated successfully!";
             return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> Delete(int id)
         {
             await _authorService.DeleteAsync(id);
+            TempData["Success"] = "Author has been deleted successfully!";
             return RedirectToAction(nameof(Index));
         }
     }

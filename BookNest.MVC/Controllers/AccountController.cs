@@ -51,6 +51,7 @@ namespace BookNest.MVC.Controllers
             }
 
             await _signInManager.SignInAsync(user, isPersistent: false);
+            TempData["Success"] = $"Welcome {model.FullName}! Your account has been created successfully.";
             return RedirectToAction("Index", "Home");
         }
 
@@ -94,6 +95,7 @@ namespace BookNest.MVC.Controllers
             }
 
             // Redirect admin users to admin dashboard
+            TempData["Success"] = $"Welcome back, {user.FullName}!";
             if (isAdmin)
             {
                 return RedirectToAction("Index", "Dashboard", new { area = "AdminPanel" });
@@ -108,6 +110,7 @@ namespace BookNest.MVC.Controllers
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
+            TempData["Success"] = "You have been logged out successfully!";
             return RedirectToAction("Index", "Home");
         }
 
@@ -148,6 +151,7 @@ namespace BookNest.MVC.Controllers
                 return View(model);
             }
 
+            TempData["Success"] = "Admin login successful!";
             return RedirectToAction("Index", "Dashboard", new { area = "AdminPanel" });
         }
 
@@ -286,7 +290,7 @@ namespace BookNest.MVC.Controllers
                 return View(model);
             }
 
-            TempData["Success"] = "Profile updated successfully!";
+            TempData["Success"] = "Your profile has been updated successfully!";
             return RedirectToAction(nameof(Profile));
         }
 
@@ -326,7 +330,7 @@ namespace BookNest.MVC.Controllers
                 return View(model);
             }
 
-            TempData["Success"] = "Password changed successfully!";
+            TempData["Success"] = "Your password has been changed successfully!";
             return RedirectToAction(nameof(Profile));
         }
 

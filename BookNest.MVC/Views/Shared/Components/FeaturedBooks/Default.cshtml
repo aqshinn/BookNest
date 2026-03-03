@@ -7,7 +7,8 @@
             <div class="book-cover-container">
                 @if (!string.IsNullOrEmpty(item.ImageUrl))
                 {
-                    <img src="~/uploads/books/@item.ImageUrl" class="book-cover" alt="@item.Title">
+                    <img src="~/uploads/books/@item.ImageUrl" alt="@item.Title" 
+     style="width: 100%; height: 260px; object-fit: cover; border-radius: 6px;" />
                 }
                 else
                 {

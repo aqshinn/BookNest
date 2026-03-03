@@ -37,7 +37,8 @@ namespace BookNest.MVC.Areas.AdminPanel.Controllers
             }
 
             await _genreService.CreateAsync(genre);
-            return RedirectToAction(nameof(Index)); 
+            TempData["Success"] = "Genre has been created successfully!";
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
@@ -61,6 +62,7 @@ namespace BookNest.MVC.Areas.AdminPanel.Controllers
             existingGenre.Name = genre.Name;
 
             await _genreService.UpdateAsync(existingGenre);
+            TempData["Success"] = "Genre has been updated successfully!";
             return RedirectToAction(nameof(Index));
         }
 
@@ -68,6 +70,7 @@ namespace BookNest.MVC.Areas.AdminPanel.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             await _genreService.DeleteAsync(id);
+            TempData["Success"] = "Genre has been deleted successfully!";
             return RedirectToAction(nameof(Index));
         }
 

@@ -14,27 +14,58 @@
     @await Component.InvokeAsync("FeaturedBooks")
 </section>
 
-<section class="trending-container">
-    <div class="section-header">
-        <h2>Trending this week</h2>
-    </div>
-    <div class="trending-card">
-        <div class="trending-cover" style="position: relative;">
-            <img src="https://m.media-amazon.com/images/I/61r-WomIz0L._AC_UF1000,1000_QL80_.jpg" alt="Sands of Eppia">
-           
-        </div>
-        <div class="trending-info">
-            <h3>Sands of Eppla - Book 1</h3>
-            <div class="author">Janeal Falor</div>
-            <div class="stars">★★★★★</div>
-            <p>Cassandra lives in a world where you fall in love at first sight—or not at all. Too bad she's blind, and being blind makes her not only immune to love, but also a criminal...</p>
-            <div class="trending-actions">
-                <div>Read more ↗</div>
-                <div style="color: #666; font-size: 12px; font-weight: 500;">👁 Preview Book</div>
+@if (ViewBag.TrendingBook != null)
+{
+    var trending = ViewBag.TrendingBook as BookNest.Core.Entities.Book;
+    var authorName = trending.BookAuthors.FirstOrDefault()?.Author.FullName ?? "Unknown Author";
+
+    <div style="margin-bottom: 60px;">
+        <h3 style="font-family: var(--font-serif, serif); font-size: 24px; color: var(--text-dark); margin-bottom: 20px;">
+            Trending this week
+        </h3>
+
+        <div style="background-color: #EFEBE1; border-radius: 12px; padding: 40px; display: flex; gap: 40px; align-items: center; max-width: 800px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+
+            <div style="flex-shrink: 0;">
+                <a href="/Home/Details/@trending.Id">
+                    <img src="~/uploads/books/@trending.ImageUrl" alt="@trending.Title"
+                         style="width: 180px; aspect-ratio: 2/3; object-fit: cover; border-radius: 4px; box-shadow: 0 15px 25px rgba(0,0,0,0.15);" />
+                </a>
             </div>
+
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <h2 style="font-family: var(--font-serif, serif); font-size: 32px; color: var(--text-dark); margin: 0; line-height: 1.2;">
+                    @trending.Title
+                </h2>
+
+                <div style="font-style: italic; color: #9D7B48; font-weight: 600; text-transform: uppercase; font-size: 13px; letter-spacing: 1px;">
+                    @authorName
+                </div>
+
+                <div style="color: #FF9900; font-size: 16px; letter-spacing: 2px;">
+                    ★ <strong>@trending.AverageRating.ToString("0.0")</strong>
+                    <span style="color: #A39683; font-size: 13px; letter-spacing: 0;">(@trending.ReviewCount reviews)</span>
+                </div>
+
+                <p style="color: var(--text-dark); font-size: 15px; line-height: 1.6; margin: 10px 0; max-width: 500px;">
+                    @(string.IsNullOrEmpty(trending.Description)
+                                    ? "A summary is not available for this book. Please visit the details page for more information." 
+                                                    : (trending.Description.Length > 180 ? trending.Description.Substring(0, 180) + "..." : trending.Description))
+                </p>
+
+                <div style="display: flex; gap: 25px; align-items: center; margin-top: 5px;">
+                    <a href="/Home/Details/@trending.Id" style="color: var(--text-dark); text-decoration: none; font-weight: bold; font-size: 14px; border-bottom: 2px solid var(--text-dark); padding-bottom: 2px;">
+                        Read more ↗
+                    </a>
+                    <a href="/Home/Details/@trending.Id" style="color: #A39683; text-decoration: none; font-size: 14px; display: flex; align-items: center; gap: 6px; transition: 0.3s;" onmouseover="this.style.color='var(--text-dark)'" onmouseout="this.style.color='#A39683'">
+                        <span style="font-size: 16px;">👁</span> Preview Book
+                    </a>
+                </div>
+            </div>
+
         </div>
     </div>
-</section>
+}
 
 <section>
     <div class="section-header">

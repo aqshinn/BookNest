@@ -118,6 +118,47 @@
 
     <script src="~/admin/js/jquery.cookie.js" type="text/javascript"></script>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
+    <script>
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "timeOut": "3000"
+        };
+    </script>
+
+    @if (TempData["Success"] != null)
+    {
+        <script>
+            toastr.success('@TempData["Success"]');
+        </script>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <script>
+            toastr.error('@TempData["Error"]');
+        </script>
+    }
+
+    @if (TempData["Warning"] != null)
+    {
+        <script>
+            toastr.warning('@TempData["Warning"]');
+        </script>
+    }
+
+    @if (TempData["Info"] != null)
+    {
+        <script>
+            toastr.info('@TempData["Info"]');
+        </script>
+    }
+
     @await RenderSectionAsync("Scripts", required: false)
     @await RenderSectionAsync("DeleteBtns", required: false)
 </body>

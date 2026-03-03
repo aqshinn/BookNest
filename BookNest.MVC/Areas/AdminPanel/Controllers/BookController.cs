@@ -131,6 +131,7 @@ namespace BookNest.MVC.Areas.AdminPanel.Controllers
             await _context.Books.AddAsync(book);
             await _context.SaveChangesAsync();
 
+            TempData["Success"] = "Book has been created successfully!";
             return RedirectToAction(nameof(Index));
         }
 
@@ -148,6 +149,7 @@ namespace BookNest.MVC.Areas.AdminPanel.Controllers
 
             await _context.SaveChangesAsync();
 
+            TempData["Success"] = "Book has been deleted successfully!";
             return RedirectToAction(nameof(Index));
         }
 
@@ -275,6 +277,7 @@ namespace BookNest.MVC.Areas.AdminPanel.Controllers
             }
 
             await _context.SaveChangesAsync();
+            TempData["Success"] = "Book has been updated successfully!";
             return RedirectToAction(nameof(Index));
         }
 
