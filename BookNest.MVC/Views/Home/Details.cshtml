@@ -111,10 +111,24 @@
 
     <h3>About the Author</h3>
     <div class="author-section">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Tolkien_1916.jpg/220px-Tolkien_1916.jpg" alt="Author">
-        <div class="author-info">
-            Bu kitabın müəllifləri haqqında detallı bioqrafiya yaxın zamanda bura əlavə ediləcək...
-        </div>
+            @{
+                // We find the author's name and take the initial letter (For example: Fyodor Dostoevsky -> F)
+                var authorName = Model.BookAuthors.FirstOrDefault()?.Author.FullName ?? "Unknown";
+                var firstLetter = !string.IsNullOrEmpty(authorName) ? authorName.Substring(0, 1).ToUpper() : "A";
+            }
+
+            <div style="display: flex; gap: 20px; align-items: flex-start; margin-top: 20px;">
+                <div style="width: 100px; height: 100px; flex-shrink: 0; background-color: #EFEBE1; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #9D7B48; font-family: var(--font-serif, serif); font-size: 45px; font-weight: bold; border: 2px solid #EAE4D4; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                    @firstLetter
+                </div>
+
+                <div>
+                    <h4 style="margin: 0 0 10px 0; color: var(--text-dark); font-family: var(--font-serif, serif); font-size: 20px;">@authorName</h4>
+                    <p style="color: #666; font-size: 14px; line-height: 1.6; margin: 0;">
+                        A detailed biography of the authors of this book will be added here soon...
+                    </p>
+                </div>
+            </div>
     </div>
 
     <h3>Book Information</h3>
