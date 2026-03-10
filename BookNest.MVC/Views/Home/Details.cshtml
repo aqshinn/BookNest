@@ -270,12 +270,18 @@
                             const dateObj = new Date(review.date);
                             const formattedDate = dateObj.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
                             const stars = "⭐".repeat(review.rating);
-                            const userImg = review.userImage ? `/uploads/profiles/${review.userImage}` : "https://randomuser.me/api/portraits/lego/1.jpg";
+                            let avatarHtml = "";
+                            if (review.userImage) {
+                                avatarHtml = `<img src="/uploads/profiles/${review.userImage}" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover;" alt="User">`;
+                            } else {
+                                const initial = review.userName ? review.userName.charAt(0).toUpperCase() : "U";
+                                avatarHtml = `<div style="width: 45px; height: 45px; flex-shrink: 0; background-color: #9D7B48; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-family: var(--font-serif, serif); font-size: 20px; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">${initial}</div>`;
+                            }
 
                             // Add review to the list
                             const reviewHtml = `
                                 <div style="background: white; padding: 15px; border-radius: 10px; border: 1px solid #F0EBE1; display: flex; gap: 15px;">
-                                    <img src="${userImg}" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover;" alt="User">
+                                    ${avatarHtml}
                                     <div style="flex: 1;">
                                         <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
                                             <strong style="color: var(--text-dark);">${review.userName}</strong>
