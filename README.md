@@ -47,7 +47,7 @@ Built with a robust **N-Tier Architecture** (Core, Data, MVC) to ensure separati
 
 1. Clone this repository:
    ```bash
-   git clone [https://github.com/](https://github.com/)[aqshinn]/booknest.git
+   git clone https://github.com/aqshinn/booknest.git
    
 2. Navigate to the BookNest.MVC directory and update the appsettings.json with your local SQL Server connection string.
 
